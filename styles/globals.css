@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --green-100: #f2fae6;
+    --green-200: #d3f191;
+    --green-300: #cce985;
+    --green-400: #b8e057;
+    --green-500: #72b014;
+    --green-600: #669f12;
+    --green-700: #598d10;
+    --green-800: #4d7c0d;
+    --green-900: #416a0b;
+    --green-1000: #264105;
+
+    --blue-100: #e0f3fd;
+    --blue-200: #b3e1fb;
+    --blue-300: #85cef9;
+    --blue-400: #58bcf7;
+    --blue-500: #1789db;
+    --blue-600: #147bc5;
+    --blue-700: #116dac;
+    --blue-800: #0e5f93;
+    --blue-900: #0b517a;
+    --blue-1000: #05274a;
+
+    --orange-100: #ffece0;
+    --orange-200: #fbc49f;
+    --orange-300: #fab684;
+    --orange-400: #ff9e57;
+    --orange-500: #f5791f;
+    --orange-600: #d4691b;
+    --orange-700: #b35917;
+    --orange-800: #914814;
+    --orange-900: #703810;
+    --orange-1000: #411e06;
+
+    --red-100: #ffeae8;
+    --red-200: #ffc8c3;
+    --red-300: #ffa89e;
+    --red-400: #ff8679;
+    --red-500: #f24d3c;
+    --red-600: #e14435;
+    --red-700: #d13b2e;
+    --red-800: #9d271d;
+    --red-900: #741c14;
+    --red-1000: #370b06;
+
+    --purple-100: #f3e8fd;
+    --purple-200: #e1c4fb;
+    --purple-300: #cf9ff9;
+    --purple-400: #bd7af7;
+    --purple-500: #ab55f5;
+    --purple-600: #9930f3;
+    --purple-700: #8710f1;
+    --purple-800: #7500ef;
+    --purple-900: #6300ed;
+    --purple-1000: #5100eb;
+
+    --radius: 0.5rem;
+
+    --chart-1: 204 89% 47%;
+    --chart-2: 88 89% 38%;
+    --chart-3: 30 89% 54%;
+    --chart-4: 270 89% 67%;
+    --chart-5: 260 70% 50%;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  background: hsl(var(--background));
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.3s;
+}
