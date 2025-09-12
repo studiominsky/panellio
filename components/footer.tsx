@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Wide from '@/containers/wide';
 
 import styles from '../styles/components/Logo.module.css';
+import Logo from './logo';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -13,7 +14,7 @@ function Footer() {
       <Wide>
         <div className="flex pt-10 gap-4 items-center justify-between ">
           <div>
-            <span className={styles.logo}>Panellio</span>
+            <Logo />
             <span className="block mt-3 text-foreground/60 max-w-[300px]">
               This website does not store any personal information. We
               use cookies to provide you with a great experience and

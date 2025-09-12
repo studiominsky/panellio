@@ -63,7 +63,7 @@ import {
   useTimeFormat,
   TimeFormat,
 } from '@/context/time-format-context';
-import styles from '../styles/components/Logo.module.css';
+import Logo from './logo';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -151,7 +151,7 @@ const Header = () => {
       localSettings.theme !== (user.theme || 'system') ||
       localSettings.colorTheme !== colorTheme ||
       localSettings.timeFormat !== timeFormat ||
-      localSettings.location !== (user.location || '') // Check location for unsaved changes
+      localSettings.location !== (user.location || '')
     );
   };
 
@@ -159,7 +159,6 @@ const Header = () => {
     return message.trim() !== '' || emoji !== '';
   };
 
-  // Debounced username validation (unchanged)
   useEffect(() => {
     const debouncedValidate = debounce(
       async (usernameToValidate: string) => {
@@ -550,7 +549,7 @@ const Header = () => {
           scroll={false}
         >
           <span className="flex items-center">
-            <span className={styles.logo}>Panellio</span>
+            <Logo />
           </span>
         </Link>
 
