@@ -1,4 +1,4 @@
-<div align="center">
+<div align="start">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="public/logo-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="public/logo-light.svg">
