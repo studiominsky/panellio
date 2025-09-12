@@ -6,46 +6,33 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { BarChart, Bar, XAxis, YAxis } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import {
   Activity,
-  CalendarDays,
   Shapes,
-  TrendingDown,
   TrendingUp,
+  TrendingDown,
+  CheckCircle2,
+  Flame,
 } from 'lucide-react';
 import Wide from '@/containers/wide';
 
 function Features() {
   const data = [
-    {
-      name: 'Januar',
-      points: 300,
-    },
-    {
-      name: 'Februar',
-      points: 170,
-    },
-    {
-      name: 'March',
-      points: 230,
-    },
-    {
-      name: 'April',
-      points: 420,
-    },
-    {
-      name: 'May',
-      points: 580,
-    },
-    {
-      name: 'June',
-      points: 905,
-    },
-    {
-      name: 'July',
-      points: 690,
-    },
+    { name: 'Jan', activity: 12 },
+    { name: 'Feb', activity: 19 },
+    { name: 'Mar', activity: 15 },
+    { name: 'Apr', activity: 25 },
+    { name: 'May', activity: 22 },
+    { name: 'Jun', activity: 30 },
   ];
   return (
     <Wide>
@@ -81,31 +68,38 @@ function Features() {
                   Tasks
                 </AccordionTrigger>
                 <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
+                  Manage your to-do lists, prioritize tasks, and track
+                  your progress to stay organized and productive.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
                 <AccordionTrigger>Bookmarks</AccordionTrigger>
                 <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
+                  Save and organize links to your favorite websites,
+                  articles, and resources for easy access.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
-                <AccordionTrigger>Lists</AccordionTrigger>
+                <AccordionTrigger>Habits</AccordionTrigger>
                 <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
+                  Build and track positive habits, monitor your
+                  progress, and stay motivated with streaks and
+                  reminders.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-4">
-                <AccordionTrigger>habits</AccordionTrigger>
+                <AccordionTrigger>Notes</AccordionTrigger>
                 <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
+                  Capture your thoughts, ideas, and important
+                  information with a flexible and easy-to-use
+                  note-taking system.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-5">
-                <AccordionTrigger>Blocks</AccordionTrigger>
+                <AccordionTrigger>Daily</AccordionTrigger>
                 <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
+                  Plan your day, set priorities, and manage your time
+                  effectively with a dedicated daily planner.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -113,15 +107,15 @@ function Features() {
           <div className="flex flex-col w-full bg-card -auto border border-border rounded-xl p-6 md:p-8 lg:w-2/3">
             <p className="text-center max-w-full text-foreground/60 text-lg md:max-w-[60%] md:text-start">
               <span className="text-inverted font-bold">Monitor</span>{' '}
-              your progress by finishing tasks, respecting time
-              blocks, or not breaking the chain.
+              your progress by completing tasks, forming habits, and
+              staying consistent.
             </p>
-            <div className="flex flex-col justify-between items-center mt-10 fill-[--ui-primary] transition duration-300 md:flex-row md:items-start">
+            <div className="flex flex-col justify-between items-center mt-10 fill-[--ui-primary] transition duration-300 md:flex-row md:items-start md:gap-8">
               <div className="flex items-baseline gap-12 justify-center flex-row md:flex-col md:gap-0 md:items-start md:justify-normal">
                 <div className="flex flex-col">
                   <span className="text-foreground/60 text-sm flex items-center gap-2">
-                    <CalendarDays size={16} />
-                    <span>Score</span>
+                    <CheckCircle2 size={16} />
+                    <span>Tasks</span>
                   </span>
                   <span className="text-foreground font-semibold text-3xl">
                     32
@@ -135,8 +129,8 @@ function Features() {
                 </div>
                 <div className="flex flex-col md:mt-7">
                   <span className="text-foreground/60 text-sm flex items-center gap-2">
-                    <CalendarDays size={16} />
-                    <span>Finished</span>
+                    <Flame size={16} />
+                    <span>Habits</span>
                   </span>
                   <span className="text-foreground font-semibold text-3xl">
                     4
@@ -149,34 +143,77 @@ function Features() {
                   </span>
                 </div>
               </div>
-              <span className="mt-10 md:mt-0">
+              <div className="mt-10 md:mt-0 w-full flex-1">
                 <div className="flex flex-col w-full justify-end items-center md:items-end">
                   <span className="text-foreground/60 text-sm flex justify-end items-center gap-2">
                     <Activity size={16} />
                     <span>Activity</span>
                   </span>
                   <span className="text-foreground font-bold text-xl text-end">
-                    <span>Score overview</span>
+                    <span>Activity Over Time</span>
                   </span>
                 </div>
-                <BarChart
-                  className="mt-5 flex bar-chart-responsive"
-                  width={450}
-                  height={230}
-                  data={data}
-                  margin={{
-                    top: 0,
-                    right: 0,
-                    left: 0,
-                    bottom: 0,
-                  }}
-                >
-                  <XAxis dataKey="name" />
-                  <YAxis />
-
-                  <Bar dataKey="points" radius={[5, 5, 0, 0]} />
-                </BarChart>
-              </span>
+                <div className="w-full h-[230px] mt-5 flex items-end ml-auto justify-end">
+                  <ResponsiveContainer width="90%" height="100%">
+                    <AreaChart
+                      data={data}
+                      margin={{
+                        top: 0,
+                        right: 0,
+                        left: 0,
+                        bottom: 0,
+                      }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="fillActivity"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="var(--ui-primary)"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="var(--ui-primary)"
+                            stopOpacity={0.1}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid
+                        vertical={false}
+                        horizontal={false}
+                        stroke="hsl(var(--border))"
+                      />
+                      <XAxis
+                        dataKey="name"
+                        tickLine={true}
+                        axisLine={true}
+                        tickMargin={10}
+                      />
+                      <YAxis hide={false} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--background))',
+                          borderColor: 'hsl(var(--border))',
+                        }}
+                      />
+                      <Area
+                        dataKey="activity"
+                        name="Activity"
+                        type="monotone"
+                        stroke="var(--ui-primary)"
+                        fill="url(#fillActivity)"
+                        fillOpacity={0.6}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
           </div>
         </div>

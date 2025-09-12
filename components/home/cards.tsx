@@ -13,6 +13,9 @@ import {
   Check,
   CalendarCheck2,
   CalendarClock,
+  Sparkles,
+  Bot,
+  Cpu,
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { ColorThemeSelector } from '../color-theme-selector';
@@ -203,19 +206,19 @@ function Cards() {
                   </span>
                 </div>
                 <div className="flex gap-3 sm:gap-5 items-center">
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
                 </div>
                 <div className="flex gap-3 sm:gap-5 items-center">
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
+                  <div className="w-6 h-6 sm:w-9 sm:h-9 bg-[--ui-primary-opacity] rounded-full transition duration-300"></div>
                   <div className="w-6 h-6 relative sm:w-9 sm:h-9 bg-[--ui-primary] rounded-full transition duration-300 p-3"></div>
                   <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground/10 rounded-full transition duration-300"></div>
                   <div className="w-6 h-6 sm:w-9 sm:h-9 bg-foreground/10 rounded-full transition duration-300"></div>
@@ -247,7 +250,7 @@ function Cards() {
           <div className="flex flex-col w-full bg-card border border-border rounded-xl p-6 md:p-8 lg:w-2/3">
             <p className="text-foreground/60 text-center text-lg md:max-w-[60%] md:text-start">
               <span className="text-inverted font-bold">
-                Collect points
+                Gain AI-powered insights
               </span>{' '}
               that will motivate you to finish your tasks and stay on
               track.
@@ -259,30 +262,17 @@ function Cards() {
                     <Folder size={16} />
                     <span className="text-sm font-bold">Home</span>
                   </span>
-                  <span className="text-sm font-normal text-foreground/60">
-                    32 points
+                </span>
+                <span className="flex justify-between border border-border min-w-[230px] p-3 rounded-md">
+                  <span className="flex gap-2 items-center">
+                    <Folder size={16} />
+                    <span className="text-sm font-bold">Learn</span>
                   </span>
                 </span>
                 <span className="flex justify-between border border-border min-w-[230px] p-3 rounded-md">
                   <span className="flex gap-2 items-center">
                     <Folder size={16} />
-                    <span className="text-sm font-bold">
-                      Learning
-                    </span>
-                  </span>
-                  <span className="text-sm font-normal text-foreground/60">
-                    95 points
-                  </span>
-                </span>
-                <span className="flex justify-between border border-border min-w-[230px] p-3 rounded-md">
-                  <span className="flex gap-2 items-center">
-                    <Folder size={16} />
-                    <span className="text-sm font-bold">
-                      Development
-                    </span>
-                  </span>
-                  <span className="text-sm font-normal text-foreground/60">
-                    108 points
+                    <span className="text-sm font-bold">Develop</span>
                   </span>
                 </span>
               </div>
@@ -311,13 +301,13 @@ function Cards() {
                 />
               </svg>
               <div className="flex flex-col xl:w-1/2">
-                <div className="flex flex-col mb-5">
+                <div className="flex flex-col mb-5 items-center">
                   <span className="text-foreground/60 text-sm flex items-center gap-2">
-                    <Award size={16} />
-                    <span>Total score</span>
+                    <Sparkles size={16} />
+                    <span>AI Analysis</span>
                   </span>
-                  <span className="text-foreground font-semibold text-5xl">
-                    235
+                  <span className="text-foreground text-5xl font-bold mt-2">
+                    AI
                   </span>
                 </div>
               </div>
@@ -345,31 +335,31 @@ function Cards() {
               <span className="flex items-center gap-2 mt-2">
                 <Check size={16} />
                 <span className="text-foreground/60 text-sm">
-                  Track your progress
+                  Analyze your progress
                 </span>
               </span>
               <span className="flex items-center gap-2 mt-2">
                 <Check size={16} />
                 <span className="text-foreground/60 text-sm">
-                  Get tips on how to stay motivated
+                  Get tips on how to improve focus
                 </span>
               </span>
               <span className="flex items-center gap-2 mt-2">
                 <Check size={16} />
                 <span className="text-foreground/60 text-sm">
-                  Track your progress
+                  Identify your most productive times
                 </span>
               </span>
               <span className="flex items-center gap-2 mt-2">
                 <Check size={16} />
                 <span className="text-foreground/60 text-sm">
-                  Get tips on how to stay motivated
+                  Get suggestions for your workflow
                 </span>
               </span>
               <span className="flex items-center gap-2 mt-2">
                 <Check size={16} />
                 <span className="text-foreground/60 text-sm">
-                  Get tips on how to stay motivated
+                  Receive motivational feedback
                 </span>
               </span>
             </div>
