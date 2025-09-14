@@ -37,7 +37,7 @@ export default function DirectoryList() {
               Loading directories...
             </p>
           ) : sortedDirectories.length > 0 ? (
-            <ul className="text-left flex gap-7 min-h-[20px]">
+            <ul className="text-left flex flex-wrap gap-4 lg:gap-7 min-h-[20px]">
               {sortedDirectories.map((directory) => {
                 const userPath = user?.username
                   ? `/${user.username}/${directory.slug}`
@@ -47,7 +47,7 @@ export default function DirectoryList() {
                 return (
                   <li
                     key={directory.id}
-                    className="text-sm py-4 relative"
+                    className="text-sm py-2 lg:py-4 relative"
                   >
                     <Link
                       href={userPath}

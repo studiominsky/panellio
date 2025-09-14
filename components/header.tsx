@@ -587,7 +587,7 @@ const Header = () => {
             <Link
               href={`/${currentUsername}`}
               scroll={false}
-              className={`flex items-center gap-2 `}
+              className={`items-center gap-2 hidden sm:flex`}
             >
               <div className="w-2 h-2 bg-[--ui-primary] rounded-full" />
               <span
@@ -606,7 +606,7 @@ const Header = () => {
           user.displayName &&
           (pathname === `/${currentUsername}` ||
             pathname.startsWith(`/${currentUsername}/`)) && (
-            <div className="relative left-[-20px] flex items-center gap-2">
+            <div className="relative left-[-20px] items-center gap-2 hidden sm:flex">
               <Link
                 href={`/${currentUsername}`}
                 scroll={false}
@@ -1029,8 +1029,7 @@ const Header = () => {
               </li>
               <li
                 className={`${headerStyles.mobileLi} ${
-                  pathname.startsWith('/resources/') ||
-                  pathname === '/resources'
+                  pathname.startsWith('/resources')
                     ? headerStyles.activeLink
                     : ''
                 }`}
@@ -1041,7 +1040,6 @@ const Header = () => {
               </li>
               <li
                 className={`${headerStyles.mobileLi} ${
-                  pathname.startsWith('/pricing/') ||
                   pathname === '/pricing'
                     ? headerStyles.activeLink
                     : ''
@@ -1053,7 +1051,6 @@ const Header = () => {
               </li>
               <li
                 className={`${headerStyles.mobileLi} ${
-                  pathname.startsWith('/support/') ||
                   pathname === '/support'
                     ? headerStyles.activeLink
                     : ''
@@ -1065,6 +1062,34 @@ const Header = () => {
               </li>
             </ul>
           </nav>
+          <div className="flex flex-col items-center gap-4">
+            {!user && (
+              <>
+                <Button
+                  variant="outline"
+                  asChild
+                  name="Sign Up"
+                  className="w-full"
+                >
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+                <Button asChild name="Log in" className="w-full">
+                  <Link href="/login">Log in</Link>
+                </Button>
+              </>
+            )}
+            {user && (
+              <Button
+                asChild
+                name="Go to your directories"
+                className="w-full"
+              >
+                <Link href={`/${user.username}`}>
+                  Go to Panellio{' '}
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </div>

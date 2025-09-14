@@ -227,8 +227,8 @@ export default function Start() {
     <>
       <div className="border-border border-b py-10">
         <Ui>
-          <div className="flex items-center justify-between">
-            <div className="flex items-start flex-col text-start max-w-[50%]">
+          <div className="flex flex-col gap-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-start">
+            <div className="flex items-start flex-col">
               <h1 className="text-2xl font-bold">
                 Directory Overview
               </h1>
@@ -238,7 +238,10 @@ export default function Start() {
               onOpenChange={setIsDialogOpen}
             >
               <DialogTrigger asChild>
-                <Button onClick={() => setIsDialogOpen(true)}>
+                <Button
+                  onClick={() => setIsDialogOpen(true)}
+                  className="w-full sm:w-auto"
+                >
                   Add New Directory{' '}
                   <Plus className="ml-2" size={18} />
                 </Button>
@@ -258,8 +261,8 @@ export default function Start() {
               <LoadingSpinner />
             </div>
           ) : directories.length > 0 ? (
-            <div className="flex gap-10 py-20">
-              <div className="w-1/3 p-6 bg-card border border-border rounded-lg">
+            <div className="flex flex-col lg:flex-row gap-10 py-10 md:py-20">
+              <div className="w-full lg:w-1/3 p-6 bg-card border border-border rounded-lg">
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
@@ -535,7 +538,7 @@ export default function Start() {
                   </SortableContext>
                 </DndContext>
               </div>
-              <div className="w-2/3 flex flex-col gap-10">
+              <div className="w-full lg:w-2/3 flex flex-col gap-10">
                 <AIAssistant />
                 <DataSummary />
               </div>
