@@ -5,6 +5,7 @@ import Wide from '@/containers/wide';
 
 import styles from '../styles/components/Logo.module.css';
 import Logo from './logo';
+import { Mail } from 'lucide-react';
 
 function Footer() {
   const currentYear = new Date().getFullYear();

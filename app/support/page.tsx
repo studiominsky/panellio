@@ -1,6 +1,6 @@
 import Header from '@/components/header';
 import { Badge } from '@/components/ui/badge';
-import { LifeBuoy } from 'lucide-react';
+import { LifeBuoy, Mail } from 'lucide-react';
 import Footer from '@/components/footer';
 import Container from '@/containers/container';
 
@@ -33,7 +33,21 @@ export default function Support() {
           </Container>
         </div>
         <Container>
-          <div className="my-16">
+          <div className="my-8 text-center">
+            <h2 className="text-2xl font-semibold mb-4">
+              Contact Us
+            </h2>
+            <p className="text-foreground/80 mb-8">
+              For direct inquiries, you can also email us at:
+              <a
+                href="mailto:panellio@proton.me"
+                className="font-medium text-[--ui-primary] flex items-center justify-center gap-2 mt-2"
+              >
+                <Mail className="w-4 h-4" /> panellio@proton.me
+              </a>
+            </p>
+          </div>
+          <div className="mt-8 mb-16">
             <SupportForm />
           </div>
         </Container>

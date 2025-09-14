@@ -4,7 +4,7 @@ import Tag from '@/components/tag';
 import Container from '@/containers/container';
 import fs from 'fs';
 import matter from 'gray-matter';
-import { Box } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import path from 'path';
 import { Suspense } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -47,17 +47,15 @@ export default function BlogPage() {
               variant="outline"
               className="mb-1 py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
             >
-              Discover more <Box className="w-4 h-4 ml-2" />
+              Insights <BookOpen className="w-4 h-4 ml-2" />
             </Badge>
             <h1 className="text-[40px] font-bold mx-auto leading-[1] md:text-[75px]">
               Resources
             </h1>
             <p className="max-w-[480px] text-lg font-normal mt-5 md:max-w-[690px] mx-auto md:text-[23px] md:leading-9">
-              Hey, can I have your attention for a second? I know, I
-              know — easier said than done, right? It feels like
-              everyone and everything is constantly competing for our
-              attention these days. It’s no wonder the world feels so
-              overwhelming.
+              Welcome to our corner of the internet. Here we share
+              articles, tips, and resources to help you get the most
+              out of our platform and stay ahead of the curve.
             </p>
           </div>
         </Container>

@@ -26,8 +26,8 @@ export async function POST(req: NextRequest) {
     }
 
     const emailData = await resend.emails.send({
-      from: 'Hello <hello@re.directory>',
-      to: 'hello@re.directory',
+      from: 'Panellio <hello@panellio.com>',
+      to: 'panellio@proton.me',
       subject: name
         ? `${name} has a message!`
         : 'Anonymous feedback received',

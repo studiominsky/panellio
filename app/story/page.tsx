@@ -1,6 +1,6 @@
 import Header from '@/components/header';
 import { Badge } from '@/components/ui/badge';
-import { Scroll } from 'lucide-react';
+import { BookText } from 'lucide-react';
 import Footer from '@/components/footer';
 import Container from '@/containers/container';
 
@@ -18,17 +18,16 @@ export default function Story() {
                 variant="outline"
                 className="mb-1 py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
               >
-                The big picture <Scroll className="w-4 h-4 ml-2" />
+                Our Mission <BookText className="w-4 h-4 ml-2" />
               </Badge>
               <h1 className="text-[40px] font-bold mx-auto leading-[1] md:text-[75px]">
-                Story behind the project
+                Story Behind The Project
               </h1>
               <p className=" max-w-[480px] text-lg font-normal mt-5 md:max-w-[690px] mx-auto md:text-[23px] md:leading-9">
-                Hey, can I have your attention for a second? I know, I
-                know — easier said than done, right? It feels like
-                everyone and everything is constantly competing for
-                our attention these days. It’s no wonder the world
-                feels so overwhelming.
+                Modern life is a constant competition for our
+                attention. The resulting digital clutter and lack of
+                focus makes meaningful progress feel overwhelming.
+                This project was started to fix that.
               </p>
             </div>
           </Container>
@@ -36,80 +35,71 @@ export default function Story() {
         <Container>
           <div className="py-5 mb-20 max-w-[720px] mx-auto">
             <p className="text-foreground/80 text-lg leading-relaxed mt-1">
-              Every moment, it’s like our time is being sliced up and
-              sold off, and we never get it back. No surprise we’re
-              all feeling so worn out.
+              Endless scrolling, fragmented tasks, and a constant
+              barrage of notifications lead to a common result: ending
+              the day with a sense of lost time and little progress.
+              This isn't a personal failure; it's the result of using
+              tools that aren't designed for focused, intentional
+              work.
             </p>
             <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              I get it. I’ve been there. I’ve found myself endlessly
-              scrolling, getting pulled in a million different
-              directions, and ending the day wondering where all my
-              time went. It’s frustrating, and honestly, a little
-              demoralizing. That’s when I realized something needed to
-              change. I needed something to help me regain control, to
-              cut through the noise, and to focus on what actually
-              matters.
+              Panellio was built out of necessity. It’s an attempt to
+              move beyond simple to-do lists and create a robust
+              framework for managing a digital life. The goal is to
+              provide a system that helps you regain control over your
+              time and attention, making your online experience more
+              deliberate and less chaotic.
             </p>
-            <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              That’s why I started working on Panellio.
-            </p>
-            <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              This isn’t just another app to help you manage your
-              to-do list. It’s something I built because, like you, I
-              was tired of feeling overwhelmed by all the
-              distractions. Panellio is about taking back your time,
-              your focus, and your peace of mind. It’s like a toolkit
-              for managing your online life in a way that feels
-              deliberate and meaningful, not chaotic and stressful.
-            </p>
-            <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              We all deserve a little breathing room in this busy
-              world. Panellio is my way of helping you—and me—find
-              that.
-            </p>
-            <h3 className="text-foreground font-semibold text-xl leading-relaxed mt-6">
-              How Panellio tries to achieve this
+            <h3 className="text-foreground font-semibold text-xl leading-relaxed mt-12">
+              How It Works
             </h3>
             <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              Panellio is designed to help you build a more
-              intentional digital life—one where your time and
-              attention are spent on what truly matters, rather than
-              being scattered across countless distractions. It tries
-              to achieve this by focusing on three key areas: setting
-              directories, adding features, and monitoring your
-              progress.
+              Panellio is built on the idea that structure creates
+              freedom. It provides a system based on three core
+              principles: compartmentalization, modular tools, and
+              progress monitoring.
             </p>
             <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              Here’s how it works:
+              1. Directories: The foundation of the system is
+              directories. These act as high-level containers that let
+              you separate different areas of your life—work, personal
+              projects, health, or hobbies. By isolating contexts, you
+              can engage with one area at a time without being
+              distracted by the others.
             </p>
             <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              Think of directories as the foundation of your digital
-              life. They’re containers that allow you to organize
-              everything into clear, distinct categories. Whether it’s
-              work, personal projects, health, or hobbies, directories
-              help you separate your life into manageable segments.
-              This way, you can focus on one area at a time without
-              getting overwhelmed by everything else.
+              2. Features: Within each directory, you add features.
+              These are the functional building blocks of your system:
+              task lists, habit trackers, notes, and more. You choose
+              the tools you need for the context you're in, creating a
+              customized dashboard for each area of your life.
             </p>
             <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              Within each directory, you can add files and features
-              that act as the building blocks of your organized life.
-              Features can be anything you need—a task list to keep
-              you on track, a challenge tracker to motivate you, or
-              even a journal to reflect on your progress. Files can
-              include important documents, notes, or resources that
-              belong in that category. It’s all about having
-              everything you need in one place, neatly organized and
-              easy to access.
+              3. Monitoring: The system tracks your activity as you
+              complete tasks and build habits. This provides a clear,
+              data-driven view of your progress. It’s not about
+              enforcing productivity, but about providing the feedback
+              needed to understand what’s working and refine your
+              approach over time.
+            </p>
+            <h3 className="text-foreground font-semibold text-xl leading-relaxed mt-12">
+              The Role of AI
+            </h3>
+            <p className="text-foreground/80 text-lg leading-relaxed mt-6">
+              A good system provides structure, but an intelligent one
+              helps you adapt. Panellio integrates an AI assistant to
+              act as a practical layer of analysis and support. It's
+              not here to automate your life, but to help you make
+              more informed decisions.
             </p>
             <p className="text-foreground/80 text-lg leading-relaxed mt-6">
-              Panellio isn’t just about organizing your life; it’s
-              about moving forward with purpose. As you complete tasks
-              or challenges, you can monitor your progress and get a
-              clear view of how you’re doing in each area of your
-              life. This isn’t about hustling harder; it’s about
-              seeing your growth and making sure you’re on the path
-              that feels right for you.
+              The AI can assist by analyzing your progress data to
+              find patterns, breaking down large goals into actionable
+              steps for your task lists, and offering objective
+              suggestions based on the objectives you've set. It’s a
+              tool designed to augment your own efforts, helping you
+              navigate your system more effectively while ensuring you
+              always remain in control.
             </p>
           </div>
         </Container>

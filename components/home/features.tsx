@@ -36,14 +36,14 @@ function Features() {
   ];
   return (
     <Wide>
-      <div className="mt-[75px] md:mt-[100px]">
+      <div className="my-[75px] md:my-[100px] lg:my-[170px]">
         <div className="flex flex-col gap-5 items-center justify-between md:flex-row md:gap-0">
-          <h2 className="size-[100%] text-center text-[35px] md:text-[45px] font-bold leading-tight md:size-[50%] md:text-start">
-            Features and their benefits.
+          <h2 className="w-full text-center text-[35px] md:text-[45px] font-bold leading-tight md:w-1/2 md:text-start">
+            All your tools, in one place.
           </h2>
 
-          <div className="flex flex-col gap-2 size-[100%] sm:size-[70%] text-center md:size-[40%] md:text-start">
-            <span className="flex items-center gap-2 m-auto text-foreground/60 md:m-0">
+          <div className="flex flex-col gap-2 w-full text-center md:w-[40%] md:text-start">
+            <span className="flex items-center gap-2 mx-auto text-foreground/60 md:mx-0">
               <Shapes className="w-5 h-5 text-foreground/60" />
               <span className="text-sm font-normal">Features</span>
             </span>
@@ -53,13 +53,13 @@ function Features() {
             </p>
           </div>
         </div>
-        <div className="flex  flex-col mt-[60px] gap-8 w-full lg:flex-row">
+        <div className="flex flex-col mt-[60px] gap-8 w-full lg:flex-row">
           <div className="flex flex-col w-full bg-card border border-border rounded-xl p-6 md:p-8 lg:w-1/3">
             <p className="text-foreground/60 text-lg">
               <span className="text-inverted font-bold">
-                Some features
+                Core features
               </span>{' '}
-              you can add to your profile. Sign up to discover more.
+              to get you started. Sign up to discover more.
             </p>
 
             <Accordion type="single" collapsible className="mt-10">
@@ -104,14 +104,14 @@ function Features() {
               </AccordionItem>
             </Accordion>
           </div>
-          <div className="flex flex-col w-full bg-card -auto border border-border rounded-xl p-6 md:p-8 lg:w-2/3">
-            <p className="text-center max-w-full text-foreground/60 text-lg md:max-w-[60%] md:text-start">
+          <div className="flex flex-col w-full bg-card border border-border rounded-xl p-6 md:p-8 lg:w-2/3">
+            <p className="text-center max-w-full text-foreground/60 text-lg md:text-start">
               <span className="text-inverted font-bold">Monitor</span>{' '}
               your progress by completing tasks, forming habits, and
               staying consistent.
             </p>
-            <div className="flex flex-col justify-between items-center mt-10 fill-[--ui-primary] transition duration-300 md:flex-row md:items-start md:gap-8">
-              <div className="flex items-baseline gap-12 justify-center flex-row md:flex-col md:gap-0 md:items-start md:justify-normal">
+            <div className="flex flex-col md:flex-row md:gap-20 mt-10">
+              <div className="flex flex-row justify-around md:flex-col md:justify-start md:gap-8">
                 <div className="flex flex-col">
                   <span className="text-foreground/60 text-sm flex items-center gap-2">
                     <CheckCircle2 size={16} />
@@ -127,7 +127,7 @@ function Features() {
                     </span>
                   </span>
                 </div>
-                <div className="flex flex-col md:mt-7">
+                <div className="flex flex-col">
                   <span className="text-foreground/60 text-sm flex items-center gap-2">
                     <Flame size={16} />
                     <span>Habits</span>
@@ -143,24 +143,25 @@ function Features() {
                   </span>
                 </div>
               </div>
-              <div className="mt-10 md:mt-0 w-full flex-1">
-                <div className="flex flex-col w-full justify-end items-center md:items-end">
-                  <span className="text-foreground/60 text-sm flex justify-end items-center gap-2">
+
+              <div className="w-full flex-1 mt-10 md:mt-0">
+                <div className="flex flex-col w-full items-center md:items-start">
+                  <span className="text-foreground/60 text-sm flex items-center gap-2">
                     <Activity size={16} />
                     <span>Activity</span>
                   </span>
-                  <span className="text-foreground font-bold text-xl text-end">
-                    <span>Activity Over Time</span>
+                  <span className="text-foreground font-bold text-xl">
+                    Activity Over Time
                   </span>
                 </div>
-                <div className="w-full h-[230px] mt-5 flex items-end ml-auto justify-end">
-                  <ResponsiveContainer width="90%" height="100%">
+                <div className="w-full h-[230px] mt-5 lg:mx-auto">
+                  <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={data}
                       margin={{
-                        top: 0,
-                        right: 0,
-                        left: 0,
+                        top: 5,
+                        right: 10,
+                        left: -20,
                         bottom: 0,
                       }}
                     >
@@ -185,21 +186,28 @@ function Features() {
                         </linearGradient>
                       </defs>
                       <CartesianGrid
-                        vertical={false}
-                        horizontal={false}
                         stroke="hsl(var(--border))"
+                        strokeDasharray="3 3"
                       />
                       <XAxis
                         dataKey="name"
-                        tickLine={true}
+                        tickLine={false}
                         axisLine={true}
                         tickMargin={10}
+                        fontSize={12}
                       />
-                      <YAxis hide={false} />
+                      <YAxis
+                        tickLine={false}
+                        axisLine={true}
+                        tickMargin={10}
+                        fontSize={12}
+                        hide={false}
+                      />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: 'hsl(var(--background))',
                           borderColor: 'hsl(var(--border))',
+                          borderRadius: '0.5rem',
                         }}
                       />
                       <Area
@@ -208,7 +216,7 @@ function Features() {
                         type="monotone"
                         stroke="var(--ui-primary)"
                         fill="url(#fillActivity)"
-                        fillOpacity={0.6}
+                        strokeWidth={2}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
