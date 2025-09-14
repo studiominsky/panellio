@@ -23,11 +23,10 @@ function Pricing() {
             variant="outline"
             className="py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
           >
-            Pricing models <Blocks className="w-4 h-4 ml-2" />
+            Pricing Models <Blocks className="w-4 h-4 ml-2" />
           </Badge>
           <h2 className="text-center max-w-[780px] text-[35px] md:text-[45px] font-bold leading-tight">
-            Use it for free with limits, or unlock all features paid
-            versions
+            Find the Perfect Plan for Your Needs
           </h2>
           <div className="flex flex-col justify-between mt-10 gap-5 w-full lg:flex-row md:mt-20">
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
@@ -36,8 +35,8 @@ function Pricing() {
                 <span>Core</span>
               </span>
               <p className="text-md mt-3 text-foreground/60">
-                Lorem ipsum dolor sit amet, consectetur adipiscing
-                elit. Sed a nisl nec nunc. Nullam sit amet nisi.
+                Perfect for getting started and exploring our main
+                features without any commitment.
               </p>
               <span className="flex items-end gap-3 mt-3">
                 <span className="text-3xl font-bold text-[--ui-primary] relative top-[3px]">
@@ -51,12 +50,12 @@ function Pricing() {
                 className="mt-4"
               >
                 <Link href="/signup">
-                  Get started for free
+                  Start for Free
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
               <span className="my-4 text-foreground/60">
-                Core model includes:
+                The Core plan includes:
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
@@ -64,15 +63,15 @@ function Pricing() {
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                Core features
+                Access to core features
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                Maximum 3 directories
+                Up to 3 directories
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleX size={20} />
-                No space for storing files
+                No file storage included
               </span>
             </div>
             <div className="flex flex-col w-full  border bg-card border-[--ui-primary] rounded-xl p-6 md:p-8 lg:w-1/3 lg:mt-[-30px]">
@@ -81,8 +80,8 @@ function Pricing() {
                 <span>Pro</span>
               </span>
               <p className="text-md mt-3 text-foreground/60">
-                Lorem ipsum dolor sit amet, consectetur adipiscing
-                elit. Sed a nisl nec nunc. Nullam sit amet nisi.
+                Ideal for professionals who need more power, storage,
+                and unlimited access to features.
               </p>
               <span className="flex items-baseline gap-3 mt-3">
                 <span className="text-3xl font-bold text-[--ui-primary] relative top-[3px]">
@@ -92,12 +91,12 @@ function Pricing() {
               </span>
               <Button asChild name="Sign Up" className="mt-4">
                 <Link href="/signup">
-                  Get started for free{' '}
+                  Go Pro
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
               <span className="my-4 text-foreground/60">
-                Pro model includes:
+                Everything in Core, plus:
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
@@ -113,7 +112,7 @@ function Pricing() {
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                100Mb for storing files
+                100MB of file storage
               </span>
             </div>
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
@@ -122,8 +121,8 @@ function Pricing() {
                 <span>Premium</span>
               </span>
               <p className="text-md mt-3 text-foreground/60">
-                Lorem ipsum dolor sit amet, consectetur adipiscing
-                elit. Sed a nisl nec nunc. Nullam sit amet nisi.
+                For users who want it all, including early access to
+                new features and AI capabilities.
               </p>
               <span className="flex items-baseline gap-3 mt-3">
                 <span className="text-4xl font-bold text-[--ui-primary] relative top-[3px]">
@@ -138,12 +137,12 @@ function Pricing() {
                 className="mt-4"
               >
                 <Link href="/signup">
-                  Get started for free
+                  Go Premium
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
               <span className="my-4 text-foreground/60">
-                Premium model includes:
+                Everything in Pro, plus:
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
@@ -159,15 +158,15 @@ function Pricing() {
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                500Mb for storing files
+                500MB of file storage
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                Experimental features included
+                Access to experimental features
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                AI included
+                Integrated AI assistant
               </span>
             </div>
           </div>
