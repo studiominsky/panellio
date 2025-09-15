@@ -32,7 +32,7 @@ import {
 import { useAuth } from '@/context/auth-context';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useDirectoryContext } from '@/context/dir-context';
+import { useDirectory } from '@/context/dir-context';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
@@ -57,7 +57,7 @@ export default function DirectorySettings({
   const [newName, setNewName] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const { removeDirectory, editDirectory } = useDirectoryContext();
+  const { removeDirectory, editDirectory } = useDirectory();
   const [isSaving, setIsSaving] = useState(false);
 
   const [
