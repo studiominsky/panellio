@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/auth-context';
-import { useDirectory } from '@/context/dir-context';
+import { useDirectoryContext } from '@/context/dir-context';
 import Full from '@/containers/full';
 import { usePathname } from 'next/navigation';
 
 export default function DirectoryList() {
   const { user } = useAuth();
-  const { directories, fetchDirectories } = useDirectory();
+  const { directories, fetchDirectories } = useDirectoryContext();
   const [loading, setLoading] = useState<boolean>(true);
   const pathname = usePathname();
 

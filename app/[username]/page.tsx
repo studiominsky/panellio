@@ -21,6 +21,13 @@ import {
   Workflow,
   Grip,
 } from 'lucide-react';
+import { db } from '@/lib/firebase';
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+} from 'firebase/firestore';
 import { toast } from '@/hooks/use-toast';
 import AIAssistant from '@/components/ai-assistent';
 import {
@@ -62,20 +69,55 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import SortableItem from '@/components/sortable-item';
-import { useDirectory } from '@/context/dir-context';
+
+interface Directory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  position: number;
+}
 
 export default function Start() {
   const { user } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const {
-    directories,
-    loading,
-    updateDirectoryPositions,
-    setDirectories,
-  } = useDirectory();
+  const [directories, setDirectories] = useState<Directory[]>([]);
+  const [loading, setLoading] = useState(false);
   const { tasks, events, habits, dailies, nodePanels } = useData();
 
   const handleCloseDialog = () => setIsDialogOpen(false);
+
+  const fetchDirectories = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      const directoriesRef = collection(userDocRef, 'directories');
+      const snapshot = await getDocs(directoriesRef);
+      const fetchedDirectories = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          ...data,
+          position: data.position ?? 0,
+        } as Directory;
+      });
+      setDirectories(fetchedDirectories);
+    } catch (error) {
+      console.error('Error fetching directories:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load directories.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDirectories();
+  }, [user]);
 
   const groupDataByMonth = (
     items: any[],
@@ -140,6 +182,24 @@ export default function Start() {
   const sortedDirectories = [...directories].sort(
     (a, b) => (a.position ?? 0) - (b.position ?? 0)
   );
+
+  const updateDirectoryPositions = async (newOrder: Directory[]) => {
+    if (!user) return;
+    const userDocRef = doc(db, 'users', user.uid);
+    const directoriesRef = collection(userDocRef, 'directories');
+    try {
+      await Promise.all(
+        newOrder.map((directory) => {
+          const directoryDocRef = doc(directoriesRef, directory.id);
+          return updateDoc(directoryDocRef, {
+            position: directory.position,
+          });
+        })
+      );
+    } catch (error) {
+      console.error('Error updating directory positions:', error);
+    }
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
