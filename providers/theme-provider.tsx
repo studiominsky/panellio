@@ -11,14 +11,13 @@ type Props = { children: React.ReactNode };
 
 function UserThemeSync() {
   const { user } = useAuth();
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   React.useEffect(() => {
-    if (!user?.theme) return;
-    if (user.theme !== resolvedTheme) {
+    if (user?.theme) {
       setTheme(user.theme);
     }
-  }, [user?.theme, resolvedTheme, setTheme]);
+  }, [user?.theme, setTheme]);
 
   return null;
 }
