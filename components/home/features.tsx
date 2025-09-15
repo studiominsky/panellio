@@ -11,7 +11,6 @@ import {
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
@@ -185,20 +184,16 @@ function Features() {
                           />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid
-                        stroke="hsl(var(--border))"
-                        strokeDasharray="3 3"
-                      />
                       <XAxis
                         dataKey="name"
                         tickLine={false}
-                        axisLine={true}
+                        axisLine={false}
                         tickMargin={10}
                         fontSize={12}
                       />
                       <YAxis
                         tickLine={false}
-                        axisLine={true}
+                        axisLine={false}
                         tickMargin={10}
                         fontSize={12}
                         hide={false}

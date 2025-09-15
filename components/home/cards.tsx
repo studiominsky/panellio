@@ -4,24 +4,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   File,
   FileJson,
-  Folder,
   Folders,
   ImageIcon,
   CalendarDays,
   Link2,
-  Award,
   Check,
   CalendarCheck2,
   CalendarClock,
-  Sparkles,
-  Bot,
-  Cpu,
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { ColorThemeSelector } from '../color-theme-selector';
 import { Label } from '@/components/ui/label';
 import Wide from '@/containers/wide';
 import { useColorTheme } from '@/hooks/use-color-theme';
+import { ChatAnimation } from './chat-animation'; // <-- Import the new component
 
 function Cards() {
   const [showRemaining, setShowRemaining] = useState(false);
@@ -247,72 +243,11 @@ function Cards() {
           </div>
         </div>
         <div className="flex flex-col mt-8 gap-8 justify-center lg:flex-row">
-          <div className="flex flex-col w-full bg-card border border-border rounded-xl p-6 md:p-8 lg:w-2/3">
-            <p className="text-foreground/60 text-center text-lg md:max-w-[60%] md:text-start">
-              <span className="text-inverted font-bold">
-                Gain AI-powered insights
-              </span>{' '}
-              that will motivate you to finish your tasks and stay on
-              track.
-            </p>
-            <div className="flex flex-col-reverse justify-between gap-5 mt-10 items-center max-w-full sm:flex-row">
-              <div className="max-h-full h-full gap-3 flex flex-col justify-between lg:gap-[30px]">
-                <span className="flex justify-between border border-border min-w-[230px] p-3 rounded-md">
-                  <span className="flex gap-2 items-center">
-                    <Folder size={16} />
-                    <span className="text-sm font-bold">Home</span>
-                  </span>
-                </span>
-                <span className="flex justify-between border border-border min-w-[230px] p-3 rounded-md">
-                  <span className="flex gap-2 items-center">
-                    <Folder size={16} />
-                    <span className="text-sm font-bold">Learn</span>
-                  </span>
-                </span>
-                <span className="flex justify-between border border-border min-w-[230px] p-3 rounded-md">
-                  <span className="flex gap-2 items-center">
-                    <Folder size={16} />
-                    <span className="text-sm font-bold">Develop</span>
-                  </span>
-                </span>
-              </div>
-              <svg
-                className="hidden transition duration-300 sm:block lg:hidden xl:block xl:w-[150%]"
-                width="304"
-                height="146"
-                viewBox="0 0 304 146"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M304 72.9998L0 73"
-                  className="stroke-[--ui-primary] transition duration-300"
-                  strokeWidth="1"
-                />
-                <path
-                  d="M0 145H117.728C155.46 145 192.41 134.247 224.25 114L246.841 99.6343C263.926 88.77 283.753 82.9999 304 82.9999"
-                  className="stroke-[--ui-primary] transition duration-300"
-                  strokeWidth="1"
-                />
-                <path
-                  d="M0 0.999901H117.728C155.46 0.999901 192.41 11.7529 224.25 31.9999L246.841 46.3656C263.926 57.2299 283.753 63 304 63"
-                  className="stroke-[--ui-primary] transition duration-300"
-                  strokeWidth="1"
-                />
-              </svg>
-              <div className="flex flex-col xl:w-1/2">
-                <div className="flex flex-col mb-5 items-center">
-                  <span className="text-foreground/60 text-sm flex items-center gap-2">
-                    <Sparkles size={16} />
-                    <span>AI Analysis</span>
-                  </span>
-                  <span className="text-foreground text-5xl font-bold mt-2">
-                    AI
-                  </span>
-                </div>
-              </div>
-            </div>
+          {/* ===== START: REPLACEMENT ===== */}
+          <div className="w-full lg:w-2/3">
+            <ChatAnimation />
           </div>
+          {/* ===== END: REPLACEMENT ===== */}
           <div className="flex flex-col items-center w-full bg-card -auto border border-border rounded-xl p-6 md:p-8 lg:w-1/3 md:items-start">
             <p className="text-center text-foreground/60 text-lg md:text-start">
               <span className="text-inverted font-bold">
