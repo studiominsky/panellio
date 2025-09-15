@@ -6,9 +6,11 @@ import {
   ReactNode,
   useState,
   useEffect,
+  useCallback,
+  useMemo,
 } from 'react';
 import { useAuth } from '@/context/auth-context';
-import { useDirectoryContext } from '@/context/dir-context';
+import { useDirectory } from '@/context/dir-context';
 import { getTasksBatch } from '@/services/task-service';
 import { getEventsBatch } from '@/services/event-service';
 import { getHabitsBatch } from '@/services/habit-service';
@@ -19,6 +21,7 @@ import { Event } from '@/types/event-types';
 import { Habit } from '@/types/habit-types';
 import { Daily } from '@/types/daily-types';
 import { NodePanel } from '@/types/nodes-types';
+import { Directory } from '@/types/directory-type';
 
 interface DataContextType {
   tasks: Task[];
@@ -26,7 +29,7 @@ interface DataContextType {
   habits: Habit[];
   dailies: Daily[];
   nodePanels: NodePanel[];
-  directories: { id: string; name: string }[];
+  directories: Directory[];
   loading: boolean;
   fetchAllData: () => Promise<void>;
 }
@@ -41,7 +44,7 @@ export const DataProvider = ({
   children: ReactNode;
 }) => {
   const { user } = useAuth();
-  const { directories, fetchDirectories } = useDirectoryContext();
+  const { directories } = useDirectory();
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
@@ -49,23 +52,15 @@ export const DataProvider = ({
   const [dailies, setDailies] = useState<Daily[]>([]);
   const [nodePanels, setNodePanels] = useState<NodePanel[]>([]);
   const [loading, setLoading] = useState(false);
-  const [directoriesLoaded, setDirectoriesLoaded] = useState(false);
 
-  useEffect(() => {
-    if (user && directories.length === 0) {
-      fetchDirectories().then(() => setDirectoriesLoaded(true));
-    } else {
-      setDirectoriesLoaded(true);
-    }
-  }, [user, directories.length]);
-
-  const fetchAllData = async () => {
-    if (!user || directories.length === 0 || !directoriesLoaded)
-      return;
+  const fetchAllData = useCallback(async () => {
+    if (!user || directories.length === 0) return;
 
     setLoading(true);
     try {
-      const directoryIds = directories.map((dir) => dir.id);
+      const directoryIds = directories.map(
+        (dir: Directory) => dir.id
+      );
 
       const [
         allTasks,
@@ -91,40 +86,39 @@ export const DataProvider = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, directories]);
 
   useEffect(() => {
-    if (user && directories.length && directoriesLoaded) {
+    if (user && directories.length > 0) {
       fetchAllData();
     }
-  }, [user, directories.length, directoriesLoaded]);
+  }, [user, directories, fetchAllData]);
 
-  useEffect(() => {}, [
-    tasks,
-    events,
-    habits,
-    dailies,
-    nodePanels,
-    directories,
-  ]);
+  const contextValue = useMemo(
+    () => ({
+      tasks,
+      events,
+      habits,
+      dailies,
+      nodePanels,
+      directories,
+      loading,
+      fetchAllData,
+    }),
+    [
+      tasks,
+      events,
+      habits,
+      dailies,
+      nodePanels,
+      directories,
+      loading,
+      fetchAllData,
+    ]
+  );
 
   return (
-    <DataContext.Provider
-      value={{
-        tasks,
-        events,
-        habits,
-        dailies,
-        nodePanels,
-        directories: directories.map(({ id, name, items }) => ({
-          id,
-          name,
-          items,
-        })),
-        loading,
-        fetchAllData,
-      }}
-    >
+    <DataContext.Provider value={contextValue}>
       {children}
     </DataContext.Provider>
   );

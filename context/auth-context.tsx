@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [setTheme]);
 
   return (
     <AuthContext.Provider
