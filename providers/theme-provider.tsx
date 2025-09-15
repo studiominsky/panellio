@@ -1,26 +1,29 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import {
   ThemeProvider as NextThemesProvider,
   useTheme,
 } from 'next-themes';
 import { useAuth } from '@/context/auth-context';
 
-export function ThemeProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { user } = useAuth();
-  const { setTheme } = useTheme();
+type Props = { children: React.ReactNode };
 
-  useEffect(() => {
-    if (user?.theme) {
+function UserThemeSync() {
+  const { user } = useAuth();
+  const { setTheme, resolvedTheme } = useTheme();
+
+  React.useEffect(() => {
+    if (!user?.theme) return;
+    if (user.theme !== resolvedTheme) {
       setTheme(user.theme);
     }
-  }, [user, setTheme]);
+  }, [user?.theme, resolvedTheme, setTheme]);
 
+  return null;
+}
+
+export function ThemeProvider({ children }: Props) {
   return (
     <NextThemesProvider
       attribute="class"
@@ -28,6 +31,7 @@ export function ThemeProvider({
       enableSystem
       disableTransitionOnChange
     >
+      <UserThemeSync />
       {children}
     </NextThemesProvider>
   );
