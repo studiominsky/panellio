@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutGrid,
@@ -27,6 +27,7 @@ import { useTimeFormat } from '@/context/time-format-context';
 import { useAuth } from '@/context/auth-context';
 import { useData } from '@/context/data-context';
 import { useChat } from 'ai/react';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import {
   AlarmClockCheck,
   CalendarCheck,
@@ -38,7 +39,7 @@ const DEFAULT_CITY = 'Vienna';
 const ACTIVE_TIME = 25 * 60;
 const PAUSE_TIME = 5 * 60;
 
-export default function Sidebar() {
+export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [time, setTime] = useState(ACTIVE_TIME);
@@ -59,9 +60,11 @@ export default function Sidebar() {
     fetchAllData,
   } = useData();
 
-  const sidebarRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef(new Audio('/sounds/notification.mp3'));
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isMobile = useMediaQuery('(max-width: 540px)');
 
   const {
     messages,
@@ -133,8 +136,8 @@ export default function Sidebar() {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node)
+        widgetRef.current &&
+        !widgetRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
       }
@@ -157,8 +160,13 @@ export default function Sidebar() {
     inputRef.current?.focus();
   };
 
+  const openDimensions = {
+    width: isMobile ? 'calc(100vw - 32px)' : 520,
+    height: isMobile ? '75vh' : 620,
+  };
+
   const widgetsRow = (
-    <div className="grid grid-cols-3 gap-3 mb-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
       <ClockWidget userLocation={user?.location || DEFAULT_CITY} />
       <WeatherWidget userLocation={user?.location || DEFAULT_CITY} />
       <PomodoroWidget
@@ -266,11 +274,7 @@ export default function Sidebar() {
   );
 
   return (
-    <div
-      className={`relative bg-background rounded-2xl ${
-        isOpen ? 'border border-border' : ''
-      }`}
-    >
+    <>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -278,42 +282,36 @@ export default function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1, ease: 'easeInOut' }}
-            className="fixed inset-0 bg-black/80 z-40"
+            className="fixed inset-0 bg-black/80 z-40 cursor-pointer"
             onClick={() => setIsOpen(false)}
           />
         )}
       </AnimatePresence>
       <div
-        ref={sidebarRef}
-        className="fixed bottom-6 right-6 z-50 rounded-2xl"
+        ref={widgetRef}
+        className="fixed bottom-6 right-6 z-50 cursor-pointer"
       >
-        <motion.div
-          className={`relative bg-background rounded-2xl ${
-            isOpen ? 'border border-border' : ''
-          }`}
-          initial={{ width: 56, height: 56 }}
-          animate={{
-            width: isOpen ? 520 : 56,
-            height: isOpen ? 620 : 56,
-          }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          onAnimationStart={handleAnimationStart}
-          onAnimationComplete={handleAnimationComplete}
-        >
-          <Card className="w-full h-full p-1 overflow-hidden bg-transparent">
-            <AnimatePresence>
-              {isOpen && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{
-                    duration: 0.2,
-                    delay: 0.1,
-                    ease: 'easeOut',
-                  }}
-                  className="w-full h-full p-4 flex flex-col gap-4 pb-8"
-                >
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              className="relative bg-background rounded-2xl border border-border"
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                width: openDimensions.width,
+                height: openDimensions.height,
+              }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{
+                type: 'spring',
+                stiffness: 200,
+                damping: 25,
+              }}
+            >
+              <Card className="w-full h-full p-1 overflow-hidden bg-transparent">
+                <div className="w-full h-full p-4 flex flex-col gap-4 pb-8">
                   {widgetsRow}
                   <div className="relative flex-1 border border-border rounded-lg overflow-hidden">
                     <Button
@@ -327,17 +325,17 @@ export default function Sidebar() {
                     </Button>
                     <div className="p-3 h-full">{chatUI}</div>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Card>
-        </motion.div>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <motion.div
-          className={`absolute bottom-2 right-2 z-10 ${
+          className={`absolute bottom-[-10px] right-0 z-10 ${
             isRunning
               ? state === 'active'
-                ? 'bg-red-800 hover:bg-red-900 outline-0'
-                : 'bg-green-800 hover:bg-green-900 outline-o'
+                ? 'bg-red-800 hover:bg-red-900'
+                : 'bg-green-800 hover:bg-green-900'
               : 'bg-background'
           } outline outline-1 outline-border rounded-full flex items-center justify-center cursor-pointer hover:bg-muted duration-300`}
           style={{ width: 62, height: 62 }}
@@ -382,21 +380,23 @@ export default function Sidebar() {
             )}
           </AnimatePresence>
         </motion.div>
-        <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-          <DialogContent
-            showCloseButton
-            className="min-w-[90%] min-h-[80%] flex flex-col p-6 rounded-lg h-[90vh]"
-          >
-            <DialogTitle></DialogTitle>
-            {chatUI}
-          </DialogContent>
-        </Dialog>
       </div>
-    </div>
+      <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
+        <DialogContent
+          showCloseButton
+          fullscreen
+          className="h-[90vh] flex flex-col p-4 sm:p-6 rounded-lg"
+        >
+          <DialogTitle className="sr-only">
+            AI Assistant Fullscreen
+          </DialogTitle>
+          {chatUI}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
-// Rest of the components (PomodoroWidget, WeatherWidget, ClockWidget) remain unchanged
 function PomodoroWidget({
   time,
   isRunning,
@@ -433,8 +433,8 @@ function PomodoroWidget({
         {state === 'idle'
           ? 'Pomodoro'
           : state === 'active'
-          ? 'Focus'
-          : 'Break'}
+            ? 'Focus'
+            : 'Break'}
       </h3>
       <p className="text-lg font-bold text-foreground">
         {formatTime(time)}

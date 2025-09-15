@@ -8,7 +8,7 @@ import Header from '@/components/header';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useValidateUsername } from '@/hooks/use-validate-username'; // Custom hook for validation
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import SidebarWidgets from '@/components/sidebar';
+import SidebarWidgets from '@/components/chat-widget';
 
 interface LayoutProps {
   children: ReactNode;

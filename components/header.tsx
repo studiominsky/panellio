@@ -543,7 +543,7 @@ const Header = () => {
 
   const headerContent = (
     <div className="py-1 w-full flex items-center justify-between">
-      <div className="flex md:gap-10 lg:gap-14 items-center min-h-[40px]">
+      <div className="flex gap-6 items-center min-h-[40px]">
         <Link
           href={user ? `/${currentUsername}` : '/'}
           scroll={false}
@@ -606,7 +606,7 @@ const Header = () => {
           user.displayName &&
           (pathname === `/${currentUsername}` ||
             pathname.startsWith(`/${currentUsername}/`)) && (
-            <div className="relative left-[-20px] items-center gap-2 hidden sm:flex">
+            <div className="relative items-center gap-2 hidden sm:flex">
               <Link
                 href={`/${currentUsername}`}
                 scroll={false}
