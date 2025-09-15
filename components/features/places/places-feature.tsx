@@ -614,7 +614,7 @@ export default function PlacesFeature({
       <Menubar className="directory-item-drag-handle cursor-grab flex py-4 justify-end items-center bg-muted border border-border rounded-t-xl">
         <MenubarMenu>
           <MenubarTrigger
-            className="bg-muted h-4 p-1 absolute right-6"
+            className="bg-muted h-4 p-0 absolute right-6"
             variant="ellipsis"
           >
             <Ellipsis size={23} />
@@ -726,7 +726,7 @@ export default function PlacesFeature({
               <Menubar className="flex py-4 justify-end items-center bg-muted">
                 <MenubarMenu>
                   <MenubarTrigger
-                    className="bg-muted h-4 p-1 absolute right-6"
+                    className="bg-muted h-4 p-0 absolute right-6"
                     variant="ellipsis"
                   >
                     <Ellipsis size={23} />
@@ -817,16 +817,12 @@ export default function PlacesFeature({
                     const placesInGroup =
                       groupedPlaces[group.id] || [];
                     return (
-                      <div
-                        key={group.id}
-                        className="pb-2 border-b border-border"
-                      >
-                        {/* Group Header with Menubar */}
+                      <div key={group.id} className="pb-2">
                         <div className="flex justify-between items-center">
                           <span className="font-bold text-sm text-start max-w-[70%]">
                             {group.name}
                           </span>
-                          <Menubar className="flex py-4 justify-end items-center bg-muted border border-border rounded-t-xl">
+                          <Menubar className="flex">
                             <MenubarMenu>
                               <MenubarTrigger
                                 variant="ghost"
@@ -1046,7 +1042,7 @@ export default function PlacesFeature({
                           <Menubar>
                             <MenubarMenu>
                               <MenubarTrigger
-                                className="px-0 py-1 absolute top-2 right-2 h-0"
+                                className="px-0 py-0 absolute top-2 right-2 h-0"
                                 variant="ellipsis"
                               >
                                 <Ellipsis size={16} />
@@ -1128,17 +1124,12 @@ export default function PlacesFeature({
         </DialogContent>
       </Dialog>
 
-      {/* Map Sidebar with Places List */}
       {mapOptions?.showPlaces && (
         <div className="p-4 w-[200px] min-h-[120px] absolute left-0 z-30 bg-card border-border border-l border-b border-r rounded-br-md overflow-auto max-h-[75%]">
           {groups.map((group) => {
             const placesInGroup = groupedPlaces[group.id] || [];
             return (
-              <div
-                key={group.id}
-                className="pb-2 border-b border-border"
-              >
-                {/* Group Header with Menubar */}
+              <div key={group.id} className="pb-2">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-sm text-start max-w-[70%]">
                     {group.name}
@@ -1175,7 +1166,6 @@ export default function PlacesFeature({
                   </Menubar>
                 </div>
 
-                {/* List of Places in the Group */}
                 <div>
                   {placesInGroup.length > 0 ? (
                     placesInGroup.map((place) => (
@@ -1349,7 +1339,7 @@ export default function PlacesFeature({
                   <Menubar>
                     <MenubarMenu>
                       <MenubarTrigger
-                        className="px-0 py-1 absolute top-2 right-2 h-0"
+                        className="px-0 py-0 absolute top-2 right-2 h-0"
                         variant="ellipsis"
                       >
                         <Ellipsis size={16} />
