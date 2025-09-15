@@ -22,7 +22,7 @@ export default function Login() {
     useAuth();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false); // New loading state
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const redirectToUserPage = async (userId: string) => {
