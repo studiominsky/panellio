@@ -5,7 +5,7 @@ import { createDirectory } from '@/services/directory-service';
 import { useAuth } from '@/context/auth-context';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useDirectory } from '@/context/dir-context';
+import { useDirectoryContext } from '@/context/dir-context';
 import { Directory } from '@/types/directory-type';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -27,7 +27,7 @@ export default function CreateDirectoryForm({
   onClose,
 }: CreateDirectoryFormProps) {
   const { user } = useAuth();
-  const { directories, addDirectory } = useDirectory();
+  const { directories, addDirectory } = useDirectoryContext();
   const [directoryName, setDirectoryName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
