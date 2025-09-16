@@ -1,6 +1,11 @@
+'use client';
+
+import { useTheme } from 'next-themes';
 import styles from '../../styles/components/Banner.module.css';
 
 function Mac() {
+  const { theme } = useTheme();
+
   return (
     <div className="flex mt-3 items-center justify-center m-auto h-full">
       <svg
@@ -74,8 +79,36 @@ function Mac() {
         />
         <path
           d="M76 20C76 8.95432 84.954 0 96 0H746C757.046 0 766 8.9543 766 20V478H76V20Z"
-          fill="black"
+          fill="#0e0e0e"
         />
+        <foreignObject
+          x="76"
+          y="20"
+          width="690"
+          height="458"
+          style={{
+            borderTopLeftRadius: '20px',
+            borderTopRightRadius: '20px',
+            overflow: 'hidden',
+          }}
+        >
+          <video
+            src={
+              theme === 'dark'
+                ? '/video-dark.mp4'
+                : '/video-light.mp4'
+            }
+            autoPlay
+            muted
+            loop
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              padding: '0 15px 0 15px',
+            }}
+          ></video>
+        </foreignObject>
         <path d="M766 463H76V478H766V463Z" fill="#1B1B1B" />
         <g style={{ mixBlendMode: 'hard-light' }} opacity="0.8">
           <path
