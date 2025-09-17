@@ -13,7 +13,6 @@ function Mac() {
           viewBox="0 0 1216 735"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
         >
           <g clipPath="url(#clip0_601_140)">
             <path
