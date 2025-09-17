@@ -1,9 +1,40 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 function Mac() {
   const { theme } = useTheme();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+
+  if (!isDesktop) {
+    return (
+      <div className="w-full max-w-lg mx-auto px-4 my-8">
+        <video
+          src={
+            theme === 'dark' ? '/video-dark.mp4' : '/video-light.mp4'
+          }
+          autoPlay
+          muted
+          loop
+          className="rounded-lg shadow-lg"
+          style={{
+            width: '100%',
+            height: 'auto',
+          }}
+        />
+        <div className="text-center mt-4 p-4 border rounded-lg bg-card">
+          <h3 className="text-lg font-semibold">
+            Best Experienced on Desktop
+          </h3>
+          <p className="text-foreground/80 mt-2">
+            Panellio is designed for larger screens. While it's
+            accessible on mobile, some features may be limited.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
@@ -13,7 +44,9 @@ function Mac() {
           viewBox="0 0 1216 735"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
         >
+          {/* ... SVG content ... */}
           <g clipPath="url(#clip0_601_140)">
             <path
               d="M1216 689.6V685H0V689.6C0 703.041 0 709.762 2.61584 714.896C4.91681 719.412 8.58832 723.083 13.1042 725.384C18.2381 728 24.9587 728 38.4 728H1177.6C1191.04 728 1197.76 728 1202.9 725.384C1207.41 723.083 1211.08 719.412 1213.38 714.896C1216 709.762 1216 703.041 1216 689.6Z"
@@ -125,7 +158,7 @@ function Mac() {
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'contain',
+                objectFit: 'cover',
               }}
             />
           </foreignObject>
