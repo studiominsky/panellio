@@ -28,6 +28,21 @@ function Pricing() {
           <h2 className="text-center max-w-[780px] text-[35px] md:text-[45px] font-bold leading-tight">
             Find the Perfect Plan for Your Needs
           </h2>
+          <p className="text-center text-foreground/80 mt-2 max-w-4xl">
+            Panellio is an open-source application. While we offer
+            managed hosting with our paid plans, you always have the
+            option to self-host it on your own cloud provider.
+            <br />
+            Check out our{' '}
+            <Link
+              href="https://github.com/studiominsky/panellio"
+              target="_blank"
+              className="text-[--ui-primary] hover:underline"
+            >
+              GitHub repository
+            </Link>{' '}
+            to get started.
+          </p>
           <div className="flex flex-col justify-between mt-10 gap-5 w-full lg:flex-row md:mt-20">
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
               <span className="text-4xl font-bold flex items-center gap-2">

@@ -40,20 +40,20 @@ function Intro() {
                 </span>
                 <span className="text-foreground/60 mt-2">
                   Assets and features are the building blocks of your
-                  directories. Assets are simplz folders and files.
-                  Features can be anything from tasks, to a challenge
+                  directories. Assets are folders and files. Features
+                  can be anything from tasks, to a places to habit
                   tracker.
                 </span>
               </div>
               <div className="m-auto max-w-[320px] text-center flex flex-col w-full justify-center md:max-w-full md:w-1/3 md:text-start">
                 <span className="text-lg m-auto font-bold flex items-center gap-2 md:m-0">
                   <Activity size={21} />
-                  <span>Monitor your progress</span>
+                  <span>Let AI monitor your life</span>
                 </span>
                 <span className="text-foreground/60 mt-2">
-                  By finishing tasks, or completing challenges, you
-                  can monitor your progress and see how you are doing
-                  in your life.
+                  Get personalized insights as AI tracks your habits,
+                  tasks, and progress to help you understand and
+                  improve your daily life.
                 </span>
               </div>
             </div>

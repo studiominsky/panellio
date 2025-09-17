@@ -1,9 +1,10 @@
+'use client';
+
 import Header from '@/components/header';
 import { Badge } from '@/components/ui/badge';
-import { Scroll } from 'lucide-react';
-import Footer from '@/components/footer';
-import Container from '@/containers/container';
 import {
+  Scroll,
+  Blocks,
   Box,
   Boxes,
   ChevronRight,
@@ -11,9 +12,10 @@ import {
   CircleX,
   Crown,
 } from 'lucide-react';
+import Footer from '@/components/footer';
+import Container from '@/containers/container';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-
 import styles from '../../styles/components/Banner.module.css';
 
 export default function Pricing() {
@@ -28,7 +30,7 @@ export default function Pricing() {
                 variant="outline"
                 className="mb-1 py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
               >
-                Pricing models <Scroll className="w-4 h-4 ml-2" />
+                Pricing Models <Blocks className="w-4 h-4 ml-2" />
               </Badge>
               <h1 className="text-[40px] font-bold mx-auto leading-[1] md:text-[75px]">
                 Choose Your Plan
@@ -37,11 +39,26 @@ export default function Pricing() {
                 Whether you're just starting out or need advanced
                 features, we have a plan that's right for you.
               </p>
+              <p className="text-center text-foreground/80 mt-4 max-w-[690px] mx-auto">
+                Panellio is an open-source application. While we offer
+                managed hosting with our paid plans, you always have
+                the option to self-host it on your own cloud provider.
+                <br />
+                Check out our{' '}
+                <Link
+                  href="https://github.com/studiominsky/panellio"
+                  target="_blank"
+                  className="text-[--ui-primary] hover:underline"
+                >
+                  GitHub repository
+                </Link>{' '}
+                to get started.
+              </p>
             </div>
           </Container>
         </div>
         <Container>
-          <div className="flex flex-col justify-between mt-10 mb-[320px] gap-5 w-full lg:flex-row md:mt-20">
+          <div className="flex flex-col justify-between mt-10 mb-[120px] gap-5 w-full lg:flex-row md:mt-20">
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
               <span className="text-4xl font-bold flex items-center gap-2">
                 <Box size={30} />

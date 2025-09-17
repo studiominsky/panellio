@@ -72,10 +72,10 @@ function Features() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger>Bookmarks</AccordionTrigger>
+                <AccordionTrigger>Places</AccordionTrigger>
                 <AccordionContent>
-                  Save and organize links to your favorite websites,
-                  articles, and resources for easy access.
+                  Save and organize your favorite places on an
+                  interactive Mapbox map with a clean design.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
