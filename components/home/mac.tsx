@@ -1,25 +1,9 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useMediaQuery } from '@/hooks/use-media-query';
 
 function Mac() {
   const { theme } = useTheme();
-  const isDesktop = useMediaQuery('(min-width: 768px)');
-
-  if (!isDesktop) {
-    return (
-      <div className="flex flex-col items-center justify-center text-center my-8 p-4 border rounded-lg bg-card">
-        <h3 className="text-lg font-semibold">
-          Best Experienced on Desktop
-        </h3>
-        <p className="text-foreground/80 mt-2">
-          Panellio is designed for larger screens. While it's
-          accessible on mobile, some features may be limited.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
@@ -29,7 +13,6 @@ function Mac() {
           viewBox="0 0 1216 735"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
         >
           <g clipPath="url(#clip0_601_140)">
             <path
