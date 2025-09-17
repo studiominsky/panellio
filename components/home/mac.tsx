@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { Info } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 function Mac() {
   const { theme } = useTheme();
@@ -25,10 +26,12 @@ function Mac() {
           }}
         />
         <div className="text-center mt-4 p-4 border border-border rounded-lg bg-card">
-          <h3 className="text-lg font-semibold flex items-center gap-2 justify-center">
-            <Info size={18} />{' '}
-            <span>Best Experienced on Desktop</span>
-          </h3>
+          <Badge
+            variant="outline"
+            className="mb-1 py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
+          >
+            Info <Info className="w-4 h-4 ml-2" />
+          </Badge>
           <p className="text-foreground/80 mt-2">
             Panellio is designed for larger screens. While it's
             accessible on mobile, some features may be limited.
