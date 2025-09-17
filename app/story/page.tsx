@@ -101,6 +101,34 @@ export default function Story() {
               navigate your system more effectively while ensuring you
               always remain in control.
             </p>
+            <h3 className="text-foreground font-semibold text-xl leading-relaxed mt-12">
+              Behind the Project
+            </h3>
+            <p className="text-foreground/80 text-lg leading-relaxed mt-6">
+              Panellio is an open-source and experimental project,
+              initially created for personal use but now open to the
+              public. It is developed by{' '}
+              <a
+                href="https://www.studiominsky.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[--ui-primary] hover:underline"
+              >
+                Studio Minsky
+              </a>
+              , a one-person studio that creates web applications,
+              websites, and other digital products. The source code is
+              available on{' '}
+              <a
+                href="https://github.com/studiominsky/panellio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[--ui-primary] hover:underline"
+              >
+                GitHub
+              </a>
+              .
+            </p>
           </div>
         </Container>
       </main>

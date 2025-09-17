@@ -66,7 +66,16 @@ function Footer() {
       </Wide>
 
       <span className="flex py-9 justify-center align-center mt-auto">
-        {currentYear} © Panellio. All rights reserved.
+        {currentYear} © Panellio by
+        <a
+          href="https://www.studiominsky.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[--ui-primary] hover:underline ml-1"
+        >
+          Studio Minsky
+        </a>
+        . All rights reserved.
       </span>
     </footer>
   );

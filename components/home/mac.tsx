@@ -2,6 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { Info } from 'lucide-react';
 
 function Mac() {
   const { theme } = useTheme();
@@ -23,9 +24,10 @@ function Mac() {
             height: 'auto',
           }}
         />
-        <div className="text-center mt-4 p-4 border rounded-lg bg-card">
-          <h3 className="text-lg font-semibold">
-            Best Experienced on Desktop
+        <div className="text-center mt-4 p-4 border border-border rounded-lg bg-card">
+          <h3 className="text-lg font-semibold flex items-center gap-2 justify-center">
+            <Info size={18} />{' '}
+            <span>Best Experienced on Desktop</span>
           </h3>
           <p className="text-foreground/80 mt-2">
             Panellio is designed for larger screens. While it's
@@ -46,7 +48,6 @@ function Mac() {
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
         >
-          {/* ... SVG content ... */}
           <g clipPath="url(#clip0_601_140)">
             <path
               d="M1216 689.6V685H0V689.6C0 703.041 0 709.762 2.61584 714.896C4.91681 719.412 8.58832 723.083 13.1042 725.384C18.2381 728 24.9587 728 38.4 728H1177.6C1191.04 728 1197.76 728 1202.9 725.384C1207.41 723.083 1211.08 719.412 1213.38 714.896C1216 709.762 1216 703.041 1216 689.6Z"

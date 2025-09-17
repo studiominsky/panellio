@@ -21,7 +21,7 @@ function Banner() {
             variant="outline"
             className="mb-1 py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
           >
-            In development mode <CodeXml className="w-4 h-4 ml-2" />
+            Version 1.0 <CodeXml className="w-4 h-4 ml-2" />
           </Badge>
           <h1 className="text-[40px] font-bold mx-auto leading-[1] md:text-[75px]">
             Redirect your focus to what matters
