@@ -52,7 +52,6 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { useTheme } from 'next-themes';
-import headerStyles from '../styles/components/Header.module.css';
 import { useRouter } from 'next/navigation';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Textarea } from './ui/textarea';
@@ -64,13 +63,10 @@ import {
   TimeFormat,
 } from '@/context/time-format-context';
 import Logo from './logo';
+import MobileMenu from './mobile-menu';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isOverlayVisible, setOverlayVisible] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const themeSelectorRef = useRef<HTMLDivElement>(null);
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] =
     useState(false);
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] =
@@ -105,7 +101,7 @@ const Header = () => {
     if (user) {
       setTheme(user.theme || 'system');
     }
-  }, [user]);
+  }, [user, setTheme]);
 
   useEffect(() => {
     setLocalSettings((prev) => ({
@@ -282,24 +278,6 @@ const Header = () => {
       });
     }
   }, [user, colorTheme]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setOverlayVisible(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  const toggleOverlay = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setOverlayVisible((prev) => !prev);
-  };
 
   const handleUpdateSettings = async () => {
     if (!hasUnsavedChanges()) {
@@ -625,6 +603,7 @@ const Header = () => {
             </div>
           )}
       </div>
+
       <div className="hidden gap-3 md:flex md:items-center">
         {user && (
           <>
@@ -926,9 +905,7 @@ const Header = () => {
 
         {!loading && !user && (
           <>
-            <div ref={themeSelectorRef}>
-              <ThemeSelector />
-            </div>
+            <ThemeSelector />
             <Button variant="outline" asChild>
               <Link href="/login" scroll={false}>
                 Log In
@@ -942,6 +919,8 @@ const Header = () => {
           </>
         )}
       </div>
+
+      <MobileMenu />
     </div>
   );
 
@@ -968,130 +947,6 @@ const Header = () => {
           <Wide>{headerContent}</Wide>
         )}
       </header>
-
-      <button
-        ref={buttonRef}
-        onClick={toggleOverlay}
-        className={headerStyles.menuButton}
-        aria-label="Menu"
-      >
-        {isOverlayVisible ? (
-          <svg
-            className={headerStyles.menuSvg}
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        ) : (
-          <svg
-            className={headerStyles.menuSvg}
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="4" x2="20" y1="12" y2="12" />
-            <line x1="4" x2="20" y1="6" y2="6" />
-            <line x1="4" x2="20" y1="18" y2="18" />
-          </svg>
-        )}
-      </button>
-
-      {isOverlayVisible && (
-        <div
-          ref={menuRef}
-          className={`flex flex-col bg-card border-border border-l gap-10 ${
-            headerStyles.overlay
-          } ${isOverlayVisible ? headerStyles.active : ''}`}
-        >
-          <nav className={headerStyles.mobileNav}>
-            <ul className={headerStyles.mobileUl}>
-              <li
-                className={`${headerStyles.mobileLi} ${
-                  pathname === '/story' ? headerStyles.activeLink : ''
-                }`}
-              >
-                <Link href="/story" scroll={false}>
-                  Story
-                </Link>
-              </li>
-              <li
-                className={`${headerStyles.mobileLi} ${
-                  pathname.startsWith('/resources')
-                    ? headerStyles.activeLink
-                    : ''
-                }`}
-              >
-                <Link href="/resources" scroll={false}>
-                  Resources
-                </Link>
-              </li>
-              <li
-                className={`${headerStyles.mobileLi} ${
-                  pathname === '/pricing'
-                    ? headerStyles.activeLink
-                    : ''
-                }`}
-              >
-                <Link href="/pricing" scroll={false}>
-                  Pricing
-                </Link>
-              </li>
-              <li
-                className={`${headerStyles.mobileLi} ${
-                  pathname === '/support'
-                    ? headerStyles.activeLink
-                    : ''
-                }`}
-              >
-                <Link href="/support" scroll={false}>
-                  Support
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          <div className="flex flex-col items-center gap-4">
-            {!user && (
-              <>
-                <Button
-                  variant="outline"
-                  asChild
-                  name="Sign Up"
-                  className="w-full"
-                >
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-                <Button asChild name="Log in" className="w-full">
-                  <Link href="/login">Log in</Link>
-                </Button>
-              </>
-            )}
-            {user && (
-              <Button
-                asChild
-                name="Go to your directories"
-                className="w-full"
-              >
-                <Link href={`/${user.username}`}>
-                  Go to Panellio{' '}
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
