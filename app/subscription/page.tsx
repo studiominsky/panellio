@@ -6,11 +6,10 @@ import {
   Blocks,
   Box,
   Boxes,
-  ChevronRight,
-  CircleCheckBig,
-  CircleX,
   Crown,
   Loader,
+  CircleCheckBig,
+  CircleX,
 } from 'lucide-react';
 import Footer from '@/components/footer';
 import Container from '@/containers/container';
@@ -18,18 +17,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import styles from '../../styles/components/Banner.module.css';
 import { useAuth } from '@/context/auth-context';
-import { loadStripe } from '@stripe/stripe-js';
 import { auth } from '@/lib/firebase';
 import { useState } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { useToast } from '@/hooks/use-toast';
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
-
-export default function Upgrade() {
+export default function Subscription() {
   const { user, loading } = useAuth();
+  const { toast } = useToast();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const handleCheckout = async (priceId: string) => {
     setIsCheckingOut(true);
@@ -72,6 +69,60 @@ export default function Upgrade() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    setIsCancelling(true);
+    const currentUser = auth.currentUser;
+    if (!currentUser || !user?.stripeSubscriptionId) {
+      toast({
+        title: 'Error',
+        description: 'No subscription found to cancel.',
+        variant: 'destructive',
+      });
+      setIsCancelling(false);
+      return;
+    }
+
+    try {
+      const idToken = await currentUser.getIdToken();
+      const response = await fetch(
+        '/api/stripe/cancel-subscription',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            subscriptionId: user.stripeSubscriptionId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || 'Failed to cancel subscription.'
+        );
+      }
+
+      toast({
+        title: 'Subscription Canceled',
+        description:
+          'Your subscription has been canceled. Your premium features will remain active until the end of the current billing period.',
+      });
+    } catch (error) {
+      console.error('Error canceling subscription:', error);
+      toast({
+        title: 'Error',
+        description:
+          'Could not cancel subscription. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
   const renderContent = () => {
     if (loading) {
       return <LoadingSpinner />;
@@ -98,6 +149,7 @@ export default function Upgrade() {
 
     return (
       <div className="flex flex-col justify-between mt-10 mb-[120px] gap-5 w-full lg:flex-row md:mt-20">
+        {/* Core Plan */}
         <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
           <span className="text-4xl font-bold flex items-center gap-2">
             <Box size={30} />
@@ -107,7 +159,6 @@ export default function Upgrade() {
             The foundational plan for getting started and exploring
             our main features.
           </p>
-
           <span className="flex items-end gap-3 mt-3">
             <span className="text-3xl font-bold text-[--ui-primary] relative top-[3px]">
               {user.stripeRole === 'core'
@@ -115,8 +166,18 @@ export default function Upgrade() {
                 : 'Free forever'}
             </span>
           </span>
-          <Button variant="outline" disabled className="mt-4">
-            {user.stripeRole === 'core' ? 'Active' : 'Downgrade'}
+          <Button
+            variant="outline"
+            className="mt-4"
+            onClick={handleCancelSubscription}
+            disabled={isCancelling || user.stripeRole === 'core'}
+          >
+            {isCancelling && (
+              <Loader className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {user.stripeRole === 'core'
+              ? 'Active'
+              : 'Downgrade to Core'}
           </Button>
           <span className="my-4 text-foreground/60">
             The Core plan includes:
@@ -139,7 +200,8 @@ export default function Upgrade() {
           </span>
         </div>
 
-        <div className="flex flex-col w-full  border bg-card border-[--ui-primary] rounded-xl p-6 md:p-8 lg:w-1/3 lg:mt-[-30px]">
+        {/* Pro Plan */}
+        <div className="flex flex-col w-full border bg-card border-[--ui-primary] rounded-xl p-6 md:p-8 lg:w-1/3 lg:mt-[-30px]">
           <span className="text-4xl font-bold flex items-center gap-2">
             <Boxes size={30} />
             <span>Pro</span>
@@ -194,6 +256,7 @@ export default function Upgrade() {
           </span>
         </div>
 
+        {/* Premium Plan */}
         <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
           <span className="text-4xl font-bold flex items-center gap-2">
             <Crown size={30} />
@@ -268,29 +331,14 @@ export default function Upgrade() {
                 variant="outline"
                 className="mb-1 py-1 border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
               >
-                Upgrade Your Plan <Blocks className="w-4 h-4 ml-2" />
+                Manage Your Subscription{' '}
+                <Blocks className="w-4 h-4 ml-2" />
               </Badge>
               <h1 className="text-[40px] font-bold mx-auto leading-[1] md:text-[75px]">
-                Unlock More Features
+                Subscription Plan
               </h1>
               <p className=" max-w-[480px] text-lg font-normal mt-5 md:max-w-[690px] mx-auto md:text-[23px] md:leading-9">
-                Choose a plan to expand your capabilities and get the
-                most out of Panellio.
-              </p>
-              <p className="text-center text-foreground/80 mt-4 max-w-[690px] mx-auto">
-                Panellio is an open-source application. While we offer
-                managed hosting with our paid plans, you always have
-                the option to self-host it on your own cloud provider.
-                <br />
-                Check out our{' '}
-                <Link
-                  href="https://github.com/studiominsky/panellio"
-                  target="_blank"
-                  className="text-[--ui-primary] hover:underline"
-                >
-                  GitHub repository
-                </Link>{' '}
-                to get started.
+                Upgrade, downgrade, or manage your billing details.
               </p>
             </div>
           </Container>

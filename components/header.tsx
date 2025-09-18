@@ -20,7 +20,7 @@ import {
   Settings,
   Smile,
   Trash2,
-  Sparkles, // Import a new icon for the upgrade button
+  Sparkles,
 } from 'lucide-react';
 import {
   Dialog,
@@ -65,7 +65,6 @@ import {
 } from '@/context/time-format-context';
 import Logo from './logo';
 import MobileMenu from './mobile-menu';
-import { log } from 'console';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -81,7 +80,7 @@ const Header = () => {
   const { theme, setTheme } = useTheme();
   const [hasUnsavedThemeChanges, setHasUnsavedThemeChanges] =
     useState(false);
-  const { timeFormat, setTimeFormat } = useTimeFormat();
+  const { timeFormat } = useTimeFormat();
 
   const [localSettings, setLocalSettings] = useState<{
     displayName: string;
@@ -98,23 +97,23 @@ const Header = () => {
     colorTheme: user?.colorTheme || colorTheme,
     timeFormat: timeFormat,
     location: user?.location || '',
-    stripeRole: user?.stripeRole || '',
+    stripeRole: user?.stripeRole || 'core',
   });
-
-  console.log(user);
 
   useEffect(() => {
     if (user) {
       setTheme(user.theme || 'system');
+      setLocalSettings({
+        displayName: user.displayName || '',
+        username: user.username || '',
+        theme: user.theme || 'system',
+        colorTheme: user.colorTheme || colorTheme,
+        timeFormat: (user.timeFormat as TimeFormat) || '24h',
+        location: user.location || '',
+        stripeRole: user.stripeRole || 'core',
+      });
     }
-  }, [user, setTheme]);
-
-  useEffect(() => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      timeFormat: timeFormat,
-    }));
-  }, [timeFormat]);
+  }, [user, setTheme, colorTheme, timeFormat]);
 
   const handleTimeFormatChange = (value: TimeFormat) => {
     setLocalSettings((prev) => ({
@@ -233,7 +232,7 @@ const Header = () => {
     return () => {
       debouncedValidate.cancel();
     };
-  }, [user]);
+  }, [user, toast]);
 
   const handleInputUsernameChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -271,20 +270,6 @@ const Header = () => {
     const newLocation = e.target.value;
     setLocalSettings((prev) => ({ ...prev, location: newLocation }));
   };
-
-  useEffect(() => {
-    if (user) {
-      setLocalSettings({
-        displayName: user.displayName || '',
-        username: user.username || '',
-        theme: user.theme || 'system',
-        colorTheme: user.colorTheme || colorTheme,
-        timeFormat: (user.timeFormat as TimeFormat) || '24h',
-        location: user.location || '',
-        stripeRole: user.stripeRole || '',
-      });
-    }
-  }, [user, colorTheme]);
 
   const handleUpdateSettings = async () => {
     if (!hasUnsavedChanges()) {
@@ -425,13 +410,6 @@ const Header = () => {
     setHasUnsavedThemeChanges(false);
   };
 
-  useEffect(() => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      theme: theme || 'system',
-    }));
-  }, [theme]);
-
   const attemptReauthentication = async (user: any) => {
     const auth = getAuth();
 
@@ -508,7 +486,6 @@ const Header = () => {
       });
     } finally {
       setLoadingSend(false);
-      setIsFeedbackDialogOpen(false);
     }
   };
 
@@ -842,14 +819,13 @@ const Header = () => {
                       <span className="text-sm text-foreground/80 capitalize">
                         {user.stripeRole} Plan
                       </span>
-                      {user.stripeRole !== 'premium' && (
-                        <Button variant="outline" asChild size="sm">
-                          <Link href="/upgrade">
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            Upgrade Plan
-                          </Link>
-                        </Button>
-                      )}
+
+                      <Button variant="outline" asChild size="sm">
+                        <Link href="/subscription">
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          Subscriptions
+                        </Link>
+                      </Button>
                     </div>
                   </div>
 

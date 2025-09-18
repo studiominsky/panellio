@@ -6,9 +6,15 @@ import {
   useState,
   useEffect,
   ReactNode,
+  useRef,
 } from 'react';
 import { auth, db } from '@/lib/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  onSnapshot,
+} from 'firebase/firestore'; // Import onSnapshot
 import { onAuthStateChanged, User } from 'firebase/auth';
 import {
   signUpWithEmail,
@@ -20,6 +26,7 @@ import {
 import { ExtendedUser } from '@/types/user-types';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: ExtendedUser | null;
@@ -50,52 +57,82 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error] = useState<string | null>(null);
   const { setTheme } = useTheme();
   const router = useRouter();
+  const { toast } = useToast();
+  const previousUserRef = useRef<ExtendedUser | null>(null);
 
-  const fetchUserFromFirestore = async (
-    uid: string
-  ): Promise<Partial<ExtendedUser>> => {
-    const userDocRef = doc(db, 'users', uid);
-    const userDoc = await getDoc(userDocRef);
+  useEffect(() => {
+    const previousRole = previousUserRef.current?.stripeRole;
+    const currentRole = user?.stripeRole;
 
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      // **FIX:** Fetch all user data, including Stripe fields
-      return {
-        username: userData.username || '',
-        theme: userData.theme || 'system',
-        displayName: userData.displayName || '',
-        colorTheme: userData.colorTheme || '',
-        timeFormat: userData.timeFormat || '24h',
-        location: userData.location || '',
-        stripeRole: userData.stripeRole || 'core',
-        stripeCustomerId: userData.stripeCustomerId,
-        stripeSubscriptionId: userData.stripeSubscriptionId,
-        stripePriceId: userData.stripePriceId,
-        stripeCurrentPeriodEnd:
-          userData.stripeCurrentPeriodEnd?.toDate(),
-      };
+    if (
+      previousRole === 'core' &&
+      (currentRole === 'pro' || currentRole === 'premium')
+    ) {
+      toast({
+        title: `Welcome to ${currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}!`,
+        description: `You've successfully upgraded. All ${currentRole} features are now unlocked.`,
+      });
     }
 
-    // Default values for a user that might not exist in Firestore yet
-    return {
-      username: '',
-      theme: 'system',
-      displayName: '',
-      colorTheme: '',
-      timeFormat: '24h',
-      location: '',
-      stripeRole: 'core', // <-- Add default role
-    };
-  };
+    previousUserRef.current = user;
+  }, [user, toast]);
+
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(
+      auth,
+      (currentUser) => {
+        if (currentUser) {
+          // User is logged in, set up a real-time listener for their Firestore document
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          const unsubscribeFirestore = onSnapshot(
+            userDocRef,
+            (docSnap) => {
+              if (docSnap.exists()) {
+                const userData = docSnap.data();
+                const updatedUser: ExtendedUser = {
+                  ...currentUser,
+                  username: userData.username || '',
+                  theme: userData.theme || 'system',
+                  displayName: userData.displayName || '',
+                  colorTheme: userData.colorTheme || '',
+                  timeFormat: userData.timeFormat || '24h',
+                  location: userData.location || '',
+                  stripeRole: userData.stripeRole || 'core',
+                  stripeCustomerId: userData.stripeCustomerId,
+                  stripeSubscriptionId: userData.stripeSubscriptionId,
+                  stripePriceId: userData.stripePriceId,
+                  stripeCurrentPeriodEnd:
+                    userData.stripeCurrentPeriodEnd?.toDate(),
+                };
+                setUser(updatedUser);
+                setTheme(updatedUser.theme || 'system');
+              } else {
+                // This case might happen if the user's auth record exists but the Firestore doc doesn't
+                setUser(currentUser as ExtendedUser);
+              }
+              setLoading(false);
+            }
+          );
+
+          return () => unsubscribeFirestore(); // Cleanup the Firestore listener
+        } else {
+          // User is logged out
+          setUser(null);
+          setTheme('system');
+          setLoading(false);
+        }
+      }
+    );
+
+    return () => unsubscribeAuth(); // Cleanup the auth listener
+  }, [setTheme]);
 
   const updateTheme = async (theme: string) => {
     if (!user || !user.uid) {
       throw new Error('User not logged in');
     }
-
     const userDocRef = doc(db, 'users', user.uid);
     await updateDoc(userDocRef, { theme });
-
     setUser((prevUser) =>
       prevUser ? { ...prevUser, theme } : prevUser
     );
@@ -103,40 +140,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = async () => {
     if (!auth.currentUser) return;
-
-    const firestoreData = await fetchUserFromFirestore(
-      auth.currentUser.uid
-    );
-    setUser({
-      ...(auth.currentUser as ExtendedUser),
-      ...firestoreData,
-    });
+    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      setUser({
+        ...(auth.currentUser as ExtendedUser),
+        ...userData,
+      });
+    }
   };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (currentUser) => {
-        if (currentUser) {
-          const firestoreData = await fetchUserFromFirestore(
-            currentUser.uid
-          );
-          const updatedUser = {
-            ...(currentUser as ExtendedUser),
-            ...firestoreData,
-          };
-          setUser(updatedUser);
-          setTheme(updatedUser.theme || 'system');
-        } else {
-          setUser(null);
-          setTheme('system');
-        }
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [setTheme]);
 
   return (
     <AuthContext.Provider
