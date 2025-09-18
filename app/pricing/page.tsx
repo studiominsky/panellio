@@ -3,7 +3,6 @@
 import Header from '@/components/header';
 import { Badge } from '@/components/ui/badge';
 import {
-  Scroll,
   Blocks,
   Box,
   Boxes,
@@ -11,117 +10,14 @@ import {
   CircleCheckBig,
   CircleX,
   Crown,
-  Loader,
 } from 'lucide-react';
 import Footer from '@/components/footer';
 import Container from '@/containers/container';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import styles from '../../styles/components/Banner.module.css';
-import { useAuth } from '@/context/auth-context';
-import { loadStripe } from '@stripe/stripe-js';
-import { auth } from '@/lib/firebase'; // Import the auth instance
-import { useState } from 'react';
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
 
 export default function Pricing() {
-  const { user, loading } = useAuth();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-
-  const handleCheckout = async (priceId: string) => {
-    setIsCheckingOut(true);
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      setIsCheckingOut(false);
-      return;
-    }
-
-    try {
-      const idToken = await currentUser.getIdToken();
-      const response = await fetch('/api/stripe/checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          priceId,
-          success_url: `${window.location.origin}/${user?.username}`,
-          cancel_url: window.location.href,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || 'Failed to create checkout session'
-        );
-      }
-
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
-      }
-    } catch (error) {
-      console.error('Error during checkout:', error);
-    } finally {
-      setIsCheckingOut(false);
-    }
-  };
-
-  const renderAuthButton = (
-    priceId: string,
-    planName: 'Pro' | 'Premium',
-    variant: 'default' | 'outline' = 'default'
-  ) => {
-    if (loading) {
-      return (
-        <Button disabled className="mt-4">
-          <Loader className="mr-2 h-4 w-4 animate-spin" />
-          Loading...
-        </Button>
-      );
-    }
-
-    if (user) {
-      return (
-        <Button
-          name={`Go ${planName}`}
-          className="mt-4"
-          variant={variant}
-          onClick={() => handleCheckout(priceId)}
-          disabled={isCheckingOut}
-        >
-          {isCheckingOut ? (
-            <Loader className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            `Go ${planName}`
-          )}
-          {!isCheckingOut && (
-            <ChevronRight className="ml-1 h-4 w-4" />
-          )}
-        </Button>
-      );
-    }
-
-    return (
-      <Button
-        variant={variant}
-        asChild
-        name="Sign Up"
-        className="mt-4"
-      >
-        <Link href="/signup">
-          Go {planName}
-          <ChevronRight className="ml-1 h-4 w-4" />
-        </Link>
-      </Button>
-    );
-  };
-
   return (
     <>
       <Header />
@@ -162,6 +58,7 @@ export default function Pricing() {
         </div>
         <Container>
           <div className="flex flex-col justify-between mt-10 mb-[120px] gap-5 w-full lg:flex-row md:mt-20">
+            {/* Core Plan */}
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
               <span className="text-4xl font-bold flex items-center gap-2">
                 <Box size={30} />
@@ -207,6 +104,7 @@ export default function Pricing() {
                 No file storage included
               </span>
             </div>
+            {/* Pro Plan */}
             <div className="flex flex-col w-full  border bg-card border-[--ui-primary] rounded-xl p-6 md:p-8 lg:w-1/3 lg:mt-[-30px]">
               <span className="text-4xl font-bold flex items-center gap-2">
                 <Boxes size={30} />
@@ -222,10 +120,12 @@ export default function Pricing() {
                 </span>
                 <span className="text-sm">per month</span>
               </span>
-              {renderAuthButton(
-                'price_1S8QADKVr2xFb4ZKGNnsBUOt',
-                'Pro'
-              )}
+              <Button asChild name="Sign Up" className="mt-4">
+                <Link href="/signup">
+                  Start for Free
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
               <span className="my-4 text-foreground/60">
                 Everything in Core, plus:
               </span>
@@ -246,6 +146,7 @@ export default function Pricing() {
                 100MB of file storage
               </span>
             </div>
+            {/* Premium Plan */}
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
               <span className="text-4xl font-bold flex items-center gap-2">
                 <Crown size={30} />
@@ -261,11 +162,17 @@ export default function Pricing() {
                 </span>
                 <span className="text-sm">per month</span>
               </span>
-              {renderAuthButton(
-                'price_1S8QATKVr2xFb4ZKZREF6gxA',
-                'Premium',
-                'outline'
-              )}
+              <Button
+                variant="outline"
+                asChild
+                name="Sign Up"
+                className="mt-4"
+              >
+                <Link href="/signup">
+                  Start for Free
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
               <span className="my-4 text-foreground/60">
                 Everything in Pro, plus:
               </span>

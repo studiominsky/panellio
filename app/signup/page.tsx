@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import Container from '@/containers/container';
@@ -12,21 +12,17 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 export default function Signup() {
   const router = useRouter();
-
   const {
+    user,
     signUpWithEmail,
     signInWithGoogle,
     signInWithGitHub,
-    setUser,
   } = useAuth();
   const { toast } = useToast();
-  const { user } = useAuth();
 
   const [form, setForm] = useState({
     displayName: '',
@@ -35,8 +31,7 @@ export default function Signup() {
     password: '',
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [validationState, setValidationState] = useState({
     checkingUsername: false,
     checkingEmail: false,
@@ -44,156 +39,69 @@ export default function Signup() {
     isEmailValid: null as boolean | null,
     isPasswordValid: null as boolean | null,
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const redirectToUserPage = async (userId: string) => {
-    try {
-      const userDocRef = doc(db, 'users', userId);
-
-      const pollUserDoc = async (retries = 5, delay = 1000) => {
-        while (retries > 0) {
-          const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists()) {
-            return userDoc.data();
-          }
-          await new Promise((resolve) => setTimeout(resolve, delay));
-          retries--;
-        }
-        throw new Error('User document not found after retries');
-      };
-
-      const userData = await pollUserDoc();
-
-      if (userData.username) {
-        router.push(`/${userData.username}`);
-      } else {
-        toast({
-          title: 'Error',
-          description:
-            'Username not found. Please go manually to your directories.',
-          variant: 'destructive',
-        });
+  useEffect(() => {
+    if (user) {
+      if (user.username) {
+        router.push(`/${user.username}`);
       }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      toast({
-        title: 'Error',
-        description:
-          'Failed to redirect. Please go manually to your directories.',
-        variant: 'destructive',
-      });
-    } finally {
+    } else {
       setIsLoading(false);
     }
-  };
-
-  const generateUsername = (input: string) => {
-    return input
-      .split('@')[0]
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '');
-  };
+  }, [user, router]);
 
   const updateForm = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validatePassword = (): boolean => {
+    const password = form.password;
+    const minLength = 8;
+    const isValid = password.length >= minLength;
+    setValidationState((prev) => ({
+      ...prev,
+      isPasswordValid: isValid,
+    }));
+    return isValid;
+  };
+
   const validateUsername = async (): Promise<boolean> => {
     const username = form.username.trim();
-
-    // Username cannot be empty
-    if (!username) {
+    if (
+      !username ||
+      !/^[a-zA-Z][a-zA-Z0-9_]*$/.test(username) ||
+      /__/.test(username) ||
+      /^_|_$/.test(username)
+    ) {
       setValidationState((prev) => ({
         ...prev,
         isUsernameValid: false,
       }));
       return false;
     }
-
-    // Username must start with a letter
-    if (!/^[a-zA-Z]/.test(username)) {
-      setValidationState((prev) => ({
-        ...prev,
-        isUsernameValid: false,
-      }));
-      return false;
-    }
-
-    // Username can only contain letters, numbers, and underscores
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      setValidationState((prev) => ({
-        ...prev,
-        isUsernameValid: false,
-      }));
-      return false;
-    }
-
-    // Username cannot have consecutive underscores
-    if (/__/.test(username)) {
-      setValidationState((prev) => ({
-        ...prev,
-        isUsernameValid: false,
-      }));
-      return false;
-    }
-
-    // Username cannot start or end with an underscore
-    if (/^_|_$/.test(username)) {
-      setValidationState((prev) => ({
-        ...prev,
-        isUsernameValid: false,
-      }));
-      return false;
-    }
-
-    const reservedUsernames = [
-      'admin',
-      'support',
-      'root',
-      'system',
-      'user',
-      'nenad',
-      'i',
-      'n',
-      'm',
-    ];
-    if (reservedUsernames.includes(username.toLowerCase())) {
-      setValidationState((prev) => ({
-        ...prev,
-        isUsernameValid: false,
-      }));
-      return false;
-    }
-
     setValidationState((prev) => ({
       ...prev,
       checkingUsername: true,
     }));
-
     try {
       const functions = getFunctions(undefined, 'europe-west3');
       const validateUsernameFn = httpsCallable<
         { username: string },
         { available: boolean }
       >(functions, 'validateUsername');
-      const result = await validateUsernameFn({
-        username,
-      });
-
+      const result = await validateUsernameFn({ username });
       setValidationState((prev) => ({
         ...prev,
         checkingUsername: false,
         isUsernameValid: result.data.available,
       }));
-
       return result.data.available;
     } catch (error) {
       console.error('Error validating username:', error);
       toast({
         title: 'Validation Error',
-        description:
-          'Unable to validate username. Please try again later.',
+        description: 'Unable to validate username.',
         variant: 'destructive',
       });
       setValidationState((prev) => ({
@@ -207,28 +115,15 @@ export default function Signup() {
 
   const validateEmail = async (): Promise<boolean> => {
     const email = form.email.trim();
-
-    if (!email) {
-      setValidationState((prev) => ({
-        ...prev,
-        isEmailValid: false,
-      }));
-      return false;
-    }
-
-    // Improved email regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
+    if (!email || !emailRegex.test(email)) {
       setValidationState((prev) => ({
         ...prev,
         isEmailValid: false,
       }));
       return false;
     }
-
     setValidationState((prev) => ({ ...prev, checkingEmail: true }));
-
     try {
       const functions = getFunctions(undefined, 'europe-west3');
       const validateEmailFn = httpsCallable<
@@ -236,20 +131,17 @@ export default function Signup() {
         { available: boolean }
       >(functions, 'validateEmail');
       const result = await validateEmailFn({ email });
-
       setValidationState((prev) => ({
         ...prev,
         checkingEmail: false,
         isEmailValid: result.data.available,
       }));
-
       return result.data.available;
     } catch (error) {
       console.error('Error validating email:', error);
       toast({
         title: 'Validation Error',
-        description:
-          'Unable to validate email. Please try again later.',
+        description: 'Unable to validate email.',
         variant: 'destructive',
       });
       setValidationState((prev) => ({
@@ -263,7 +155,6 @@ export default function Signup() {
 
   const handleSignup = async () => {
     setIsSubmitting(true);
-    setIsLoading(true);
     const { displayName, username, email, password } = form;
 
     if (
@@ -299,37 +190,16 @@ export default function Signup() {
     }
 
     try {
-      const currentUser = await signUpWithEmail(
-        email,
-        password,
-        displayName,
-        username
-      );
-
-      if (currentUser) {
-        setUser({
-          ...currentUser,
-          username,
-          theme: 'system',
-        });
-
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        await setDoc(userDocRef, { displayName, username, email });
-
-        toast({
-          title: 'Signup Successful',
-          description: `Welcome, ${
-            currentUser.displayName || currentUser.email
-          }.`,
-        });
-
-        await redirectToUserPage(currentUser.uid);
-      }
+      await signUpWithEmail(email, password, displayName, username);
+      toast({
+        title: 'Signup Successful',
+        description: `Welcome, ${displayName}.`,
+      });
     } catch (error) {
       console.error('Signup Error:', error);
       toast({
         title: 'Signup Failed',
-        description: 'An error occurred. Try again later.',
+        description: 'An error occurred. Please try again later.',
         variant: 'destructive',
       });
     } finally {
@@ -342,94 +212,30 @@ export default function Signup() {
   ) => {
     setIsLoading(true);
     try {
-      let currentUser;
-      if (provider === 'google') {
-        currentUser = await signInWithGoogle();
-      } else if (provider === 'github') {
-        currentUser = await signInWithGitHub();
-      }
-
-      if (currentUser) {
-        const { uid, email, displayName } = currentUser;
-
-        const userDocRef = doc(db, 'users', uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (!userDoc.exists()) {
-          const username = generateUsername(
-            displayName || email || ''
-          );
-          await setDoc(userDocRef, {
-            displayName: displayName || '',
-            username,
-            email: email || '',
-          });
-        }
-
-        const userData = (await getDoc(userDocRef)).data();
-
-        if (userData?.username) {
-          toast({
-            title: `${
-              provider === 'google' ? 'Google' : 'GitHub'
-            } Signup Successful`,
-            description: `Welcome, ${userData.username}.`,
-          });
-
-          router.push(`/${userData.username}`);
-        } else {
-          throw new Error(
-            'Username not found in Firestore document.'
-          );
-        }
-      }
+      const socialUser =
+        provider === 'google'
+          ? await signInWithGoogle()
+          : await signInWithGitHub();
+      toast({
+        title: `${provider === 'google' ? 'Google' : 'GitHub'} Signup Successful`,
+        description: `Welcome, ${socialUser.displayName || 'there'}.`,
+      });
     } catch (error) {
       console.error('Social Signup Error:', error);
       toast({
-        title: `${
-          provider === 'google' ? 'Google' : 'GitHub'
-        } Signup Failed`,
+        title: `${provider === 'google' ? 'Google' : 'GitHub'} Signup Failed`,
         description:
-          'An error occurred during signup. Please try again later.',
+          'An error occurred during signup. Please try again.',
         variant: 'destructive',
       });
     }
   };
 
-  const validatePassword = (): boolean => {
-    const password = form.password;
-
-    if (!password.trim()) {
-      setValidationState((prev) => ({
-        ...prev,
-        isPasswordValid: null,
-      }));
-      return false;
-    }
-
-    const minLength = 8;
-    // Optional: Add more complex requirements
-    // const hasUpperCase = /[A-Z]/.test(password);
-    // const hasLowerCase = /[a-z]/.test(password);
-    // const hasNumber = /[0-9]/.test(password);
-    // const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    if (password.length < minLength) {
-      setValidationState((prev) => ({
-        ...prev,
-        isPasswordValid: false,
-      }));
-      return false;
-    }
-
-    setValidationState((prev) => ({
-      ...prev,
-      isPasswordValid: true,
-    }));
-    return true;
-  };
-
   if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (user) {
     return <LoadingSpinner />;
   }
 
@@ -475,19 +281,18 @@ export default function Signup() {
                           validationState.checkingUsername
                             ? 'text-blue-500'
                             : validationState.isUsernameValid === true
-                            ? 'text-green-500'
-                            : 'text-red-500'
+                              ? 'text-green-500'
+                              : 'text-red-500'
                         }`}
                       >
                         {validationState.checkingUsername
                           ? 'Checking...'
                           : validationState.isUsernameValid
-                          ? 'Username is available'
-                          : 'Invalid or taken username'}
+                            ? 'Username is available'
+                            : 'Invalid or taken username'}
                       </span>
                     )}
                 </div>
-
                 <div className="flex flex-col items-center">
                   <Input
                     type="email"
@@ -507,15 +312,15 @@ export default function Signup() {
                           validationState.checkingEmail
                             ? 'text-yellow-500'
                             : validationState.isEmailValid
-                            ? 'text-green-500'
-                            : 'text-red-500'
+                              ? 'text-green-500'
+                              : 'text-red-500'
                         }`}
                       >
                         {validationState.checkingEmail
                           ? 'Checking...'
                           : validationState.isEmailValid
-                          ? 'Email is available'
-                          : 'Invalid or taken email'}
+                            ? 'Email is available'
+                            : 'Invalid or taken email'}
                       </span>
                     )}
                 </div>
@@ -542,7 +347,7 @@ export default function Signup() {
                       >
                         {validationState.isPasswordValid
                           ? 'Password is valid'
-                          : `Password must be at least ${8} characters long`}
+                          : `Password must be at least 8 characters long`}
                       </span>
                     )}
                 </div>
@@ -550,11 +355,11 @@ export default function Signup() {
                   variant="action"
                   className="w-[300px] mx-auto"
                   onClick={handleSignup}
+                  disabled={isSubmitting}
                 >
                   <span className="flex gap-2 items-center">
                     <Mail height={17} width={17} />
                     <span>
-                      {' '}
                       {isSubmitting
                         ? 'Creating Account...'
                         : 'Create Account'}

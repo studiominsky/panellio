@@ -20,6 +20,7 @@ import {
   Settings,
   Smile,
   Trash2,
+  Sparkles, // Import a new icon for the upgrade button
 } from 'lucide-react';
 import {
   Dialog,
@@ -64,6 +65,7 @@ import {
 } from '@/context/time-format-context';
 import Logo from './logo';
 import MobileMenu from './mobile-menu';
+import { log } from 'console';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -88,6 +90,7 @@ const Header = () => {
     colorTheme: string;
     timeFormat: TimeFormat;
     location: string;
+    stripeRole: string;
   }>({
     displayName: user?.displayName || '',
     username: user?.username || '',
@@ -95,7 +98,10 @@ const Header = () => {
     colorTheme: user?.colorTheme || colorTheme,
     timeFormat: timeFormat,
     location: user?.location || '',
+    stripeRole: user?.stripeRole || '',
   });
+
+  console.log(user);
 
   useEffect(() => {
     if (user) {
@@ -275,6 +281,7 @@ const Header = () => {
         colorTheme: user.colorTheme || colorTheme,
         timeFormat: (user.timeFormat as TimeFormat) || '24h',
         location: user.location || '',
+        stripeRole: user.stripeRole || '',
       });
     }
   }, [user, colorTheme]);
@@ -825,7 +832,28 @@ const Header = () => {
                     </span>
                   </div>
 
-                  <div className="border-[0.5px] border-border"></div>
+                  <div className="border-[0.5px] border-border my-4"></div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground">
+                      Subscription
+                    </label>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-sm text-foreground/80 capitalize">
+                        {user.stripeRole} Plan
+                      </span>
+                      {user.stripeRole !== 'premium' && (
+                        <Button variant="outline" asChild size="sm">
+                          <Link href="/upgrade">
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            Upgrade Plan
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border-[0.5px] border-border my-4"></div>
 
                   <Button
                     variant="destructiveLink"

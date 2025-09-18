@@ -94,7 +94,7 @@ export const stripeWebhook = onRequest(
       event = stripe.webhooks.constructEvent(
         req.rawBody,
         sig,
-        webhookSecret
+        webhookSecret,
       );
     } catch (err) {
       logger.error("Webhook signature verification failed.", err);
@@ -113,7 +113,8 @@ export const stripeWebhook = onRequest(
         );
 
         const priceId = subscription.items.data[0].price.id;
-        let stripeRole = "core";
+        let stripeRole: "core" | "pro" | "premium" = "core";
+
         if (priceId === "price_1S8QADKVr2xFb4ZKGNnsBUOt") {
           stripeRole = "pro";
         } else if (priceId === "price_1S8QATKVr2xFb4ZKZREF6gxA") {

@@ -24,6 +24,7 @@ import {
 } from 'firebase/firestore';
 
 const getSystemTheme = (): 'light' | 'dark' => {
+  if (typeof window === 'undefined') return 'light';
   return window.matchMedia &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'dark'
@@ -36,7 +37,7 @@ const generateUsername = async (name: string): Promise<string> => {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/[^a-z0-9_]/g, '');
 
   let uniqueUsername = baseUsername;
   let counter = 1;
@@ -84,6 +85,10 @@ export const signUpWithEmail = async (
     email,
     createdAt: serverTimestamp(),
     theme: 'system',
+    colorTheme: 'green',
+    timeFormat: '24h',
+    location: '',
+    stripeRole: 'core',
   });
 
   return currentUser;
@@ -121,6 +126,10 @@ export const signInWithGoogle = async (
       email: user.email,
       createdAt: serverTimestamp(),
       theme: getSystemTheme(),
+      colorTheme: 'green',
+      timeFormat: '24h',
+      location: '',
+      stripeRole: 'core',
     });
   }
 
@@ -148,6 +157,10 @@ export const signInWithGitHub = async (
       email: user.email,
       createdAt: serverTimestamp(),
       theme: getSystemTheme(),
+      colorTheme: 'green',
+      timeFormat: '24h',
+      location: '',
+      stripeRole: 'core',
     });
   }
 

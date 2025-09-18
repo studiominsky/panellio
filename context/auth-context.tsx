@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<ExtendedUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error] = useState<string | null>(null);
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const router = useRouter();
 
   const fetchUserFromFirestore = async (
@@ -59,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
+      // **FIX:** Fetch all user data, including Stripe fields
       return {
         username: userData.username || '',
         theme: userData.theme || 'system',
@@ -70,10 +71,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         stripeCustomerId: userData.stripeCustomerId,
         stripeSubscriptionId: userData.stripeSubscriptionId,
         stripePriceId: userData.stripePriceId,
-        stripeCurrentPeriodEnd: userData.stripeCurrentPeriodEnd?.toDate(),
+        stripeCurrentPeriodEnd:
+          userData.stripeCurrentPeriodEnd?.toDate(),
       };
     }
 
+    // Default values for a user that might not exist in Firestore yet
     return {
       username: '',
       theme: 'system',
@@ -81,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       colorTheme: '',
       timeFormat: '24h',
       location: '',
-      stripeRole: 'core',
+      stripeRole: 'core', // <-- Add default role
     };
   };
 
