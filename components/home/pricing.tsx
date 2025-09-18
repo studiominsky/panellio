@@ -106,7 +106,7 @@ function Pricing() {
               </span>
               <Button asChild name="Sign Up" className="mt-4">
                 <Link href="/signup">
-                  Go Pro
+                  Start for Free
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
@@ -152,7 +152,7 @@ function Pricing() {
                 className="mt-4"
               >
                 <Link href="/signup">
-                  Go Premium
+                  Start for Free
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
