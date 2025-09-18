@@ -66,6 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         colorTheme: userData.colorTheme || '',
         timeFormat: userData.timeFormat || '24h',
         location: userData.location || '',
+        stripeRole: userData.stripeRole || 'core',
+        stripeCustomerId: userData.stripeCustomerId,
+        stripeSubscriptionId: userData.stripeSubscriptionId,
+        stripePriceId: userData.stripePriceId,
+        stripeCurrentPeriodEnd: userData.stripeCurrentPeriodEnd?.toDate(),
       };
     }
 
@@ -76,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       colorTheme: '',
       timeFormat: '24h',
       location: '',
+      stripeRole: 'core',
     };
   };
 
@@ -127,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [setTheme]);
 
   return (
     <AuthContext.Provider

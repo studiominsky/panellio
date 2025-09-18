@@ -9,4 +9,9 @@ export interface ExtendedUser extends User {
   theme?: string;
   colorTheme?: string;
   timeFormat?: string;
+  stripeRole?: 'core' | 'pro' | 'premium';
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
+  stripeCurrentPeriodEnd?: Date;
 }

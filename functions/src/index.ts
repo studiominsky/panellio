@@ -109,14 +109,23 @@ export const stripeWebhook = onRequest(
 
       if (userId && session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
+            session.subscription as string
         );
+
+        const priceId = subscription.items.data[0].price.id;
+        let stripeRole = "core";
+        if (priceId === "price_1S8QADKVr2xFb4ZKGNnsBUOt") {
+          stripeRole = "pro";
+        } else if (priceId === "price_1S8QATKVr2xFb4ZKZREF6gxA") {
+          stripeRole = "premium";
+        }
 
         const userRef = admin.firestore().collection("users").doc(userId);
         await userRef.update({
           stripeCustomerId: subscription.customer,
           stripeSubscriptionId: subscription.id,
-          stripePriceId: subscription.items.data[0].price.id,
+          stripePriceId: priceId,
+          stripeRole: stripeRole,
           stripeCurrentPeriodEnd: admin.firestore.Timestamp.fromMillis(
             subscription.items.data[0].current_period_end * 1000
           ),
