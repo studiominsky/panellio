@@ -106,12 +106,21 @@ export const stripeWebhook = onRequest(
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.userId;
+      const subscriptionId = session.subscription as string;
+
+      if (!userId || !subscriptionId) {
+        logger.error("Missing userId or subscriptionId in checkout session.");
+        break;
+      }
 
       if (userId && session.subscription) {
         const subscription = await stripe.subscriptions.retrieve(
             session.subscription as string
         );
 
+        await stripe.customers.update(subscription.customer as string, {
+          metadata: {userId: userId},
+        });
         const priceId = subscription.items.data[0].price.id;
         let stripeRole: "core" | "pro" | "premium" = "core";
 
@@ -131,6 +140,24 @@ export const stripeWebhook = onRequest(
             subscription.items.data[0].current_period_end * 1000
           ),
         });
+      }
+      break;
+    }
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as Stripe.Subscription;
+      const customer = await stripe.customers
+        .retrieve(subscription.customer as string) as Stripe.Customer;
+      const userId = customer.metadata.userId;
+
+      if (userId) {
+        const userRef = admin.firestore().collection("users").doc(userId);
+        await userRef.update({
+          stripeSubscriptionId: null,
+          stripePriceId: null,
+          stripeRole: "core",
+          stripeCurrentPeriodEnd: null,
+        });
+        logger.log(`User ${userId} model cancelled. Role set to core.`);
       }
       break;
     }

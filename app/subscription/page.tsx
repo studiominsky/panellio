@@ -160,7 +160,7 @@ export default function Subscription() {
             our main features.
           </p>
           <span className="flex items-end gap-3 mt-3">
-            <span className="text-3xl font-bold text-[--ui-primary] relative top-[3px]">
+            <span className="text-2xl font-bold text-[--ui-primary] relative top-[3px]">
               {user.stripeRole === 'core'
                 ? 'Your Current Plan'
                 : 'Free forever'}

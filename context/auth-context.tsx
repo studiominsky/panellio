@@ -82,7 +82,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       auth,
       (currentUser) => {
         if (currentUser) {
-          // User is logged in, set up a real-time listener for their Firestore document
           const userDocRef = doc(db, 'users', currentUser.uid);
           const unsubscribeFirestore = onSnapshot(
             userDocRef,
@@ -107,16 +106,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUser(updatedUser);
                 setTheme(updatedUser.theme || 'system');
               } else {
-                // This case might happen if the user's auth record exists but the Firestore doc doesn't
                 setUser(currentUser as ExtendedUser);
               }
               setLoading(false);
             }
           );
 
-          return () => unsubscribeFirestore(); // Cleanup the Firestore listener
+          return () => unsubscribeFirestore();
         } else {
-          // User is logged out
           setUser(null);
           setTheme('system');
           setLoading(false);
@@ -124,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    return () => unsubscribeAuth(); // Cleanup the auth listener
+    return () => unsubscribeAuth();
   }, [setTheme]);
 
   const updateTheme = async (theme: string) => {
