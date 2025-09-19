@@ -15,9 +15,11 @@ import {
   DialogDescription,
 } from './ui/dialog';
 import { Button } from './ui/button';
-import { Loader } from 'lucide-react';
+import { Loader, Sparkles } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { usePlan } from '@/hooks/use-plan'; // 1. Import the plan hook
+import Link from 'next/link';
 
 interface CreateDirectoryFormProps {
   onClose: () => void;
@@ -31,10 +33,24 @@ export default function CreateDirectoryForm({
   const [directoryName, setDirectoryName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const { plan } = usePlan();
 
   const router = useRouter();
 
+  const atDirectoryLimit =
+    directories.length >= plan.limits.directories;
+
   const handleCreateDirectory = async () => {
+    if (atDirectoryLimit) {
+      toast({
+        title: 'Limit Reached',
+        description:
+          'You have reached your directory limit. Please upgrade.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const trimmedName = directoryName.trim();
 
     if (!trimmedName) {
@@ -139,38 +155,61 @@ export default function CreateDirectoryForm({
           features.
         </DialogDescription>
       </DialogHeader>
-      <Input
-        type="text"
-        placeholder="Directory Name"
-        value={directoryName}
-        onChange={(e) => setDirectoryName(e.target.value)}
-        className="mt-4"
-      />
-      <Textarea
-        placeholder="Description (optional)"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="mb-2 mt-4"
-      />
 
-      <Button
-        onClick={handleCreateDirectory}
-        disabled={isCreateDisabled}
-        className={`w-full mt-4 ${
-          isCreateDisabled
-            ? 'cursor-not-allowed opacity-50'
-            : 'hover:opacity-90'
-        }`}
-      >
-        {loading ? (
-          <div className="flex items-center gap-2">
-            <Loader className="animate-spin" size={16} />
-            Creating...
-          </div>
-        ) : (
-          'Create Directory'
-        )}
-      </Button>
+      {atDirectoryLimit ? (
+        <div className="mt-4 text-center">
+          <p className="text-sm font-bold text-destructive">
+            You've reached your limit of {plan.limits.directories}{' '}
+            directories.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Please upgrade your plan to create more.
+          </p>
+          <Button className="text-background  justify-center mt-3">
+            <Link
+              href="/subscription"
+              className="flex items-center gap-1"
+            >
+              <Sparkles size={14} /> Upgrade
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <>
+          <Input
+            type="text"
+            placeholder="Directory Name"
+            value={directoryName}
+            onChange={(e) => setDirectoryName(e.target.value)}
+            className="mt-4"
+          />
+          <Textarea
+            placeholder="Description (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="mb-2 mt-4"
+          />
+
+          <Button
+            onClick={handleCreateDirectory}
+            disabled={isCreateDisabled}
+            className={`w-full mt-4 ${
+              isCreateDisabled
+                ? 'cursor-not-allowed opacity-50'
+                : 'hover:opacity-90'
+            }`}
+          >
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <Loader className="animate-spin" size={16} />
+                Creating...
+              </div>
+            ) : (
+              'Create Directory'
+            )}
+          </Button>
+        </>
+      )}
     </>
   );
 }

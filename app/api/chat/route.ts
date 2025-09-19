@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     const { messages, directories, tasks, events, habits, dailies } =
       await req.json();
 
-    if (!directories || directories.length === 0) {
+    if (!directories) {
       console.warn('⚠ No directories received in request!');
     }
 

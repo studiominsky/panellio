@@ -154,7 +154,6 @@ export const deleteAssets = async (
       });
     }
 
-    // Commit the batch operation
     await batch.commit();
   } catch (error) {
     console.error('Error removing assets:', error);

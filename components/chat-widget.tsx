@@ -12,10 +12,10 @@ import {
   CloudLightning,
   CloudFog,
   Maximize2,
+  Sparkles, // Import Sparkles for the upgrade button
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
   Dialog,
@@ -33,6 +33,8 @@ import {
   CalendarCheck,
   GraduationCap,
 } from 'lucide-react';
+import { usePlan } from '@/hooks/use-plan'; // 1. Import the plan hook
+import Link from 'next/link';
 
 const WEATHER_API_KEY = process.env.NEXT_PUBLIC_OPEN_WEATHER_API_KEY;
 const DEFAULT_CITY = 'Vienna';
@@ -49,16 +51,11 @@ export default function ChatWidget() {
   );
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [initialMessageSet, setInitialMessageSet] = useState(false);
+  const [usedPrompts, setUsedPrompts] = useState<string[]>([]); // For click-once logic
 
   const { user } = useAuth();
-  const {
-    directories,
-    tasks,
-    events,
-    habits,
-    dailies,
-    fetchAllData,
-  } = useData();
+  const { plan } = usePlan(); // 2. Use the plan hook
+  const { directories, tasks, events, habits, dailies } = useData();
 
   const widgetRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef(new Audio('/sounds/notification.mp3'));
@@ -72,6 +69,8 @@ export default function ChatWidget() {
     handleInputChange,
     handleSubmit,
     setMessages,
+    append,
+    isLoading,
   } = useChat({
     api: '/api/chat',
     body: {
@@ -84,8 +83,10 @@ export default function ChatWidget() {
     },
   });
 
+  const canUseFreeformInput = plan.limits.hasFreeformAi;
+
   useEffect(() => {
-    if (user && !initialMessageSet) {
+    if (user && !initialMessageSet && messages.length <= 1) {
       setMessages([
         {
           id: 'welcome-message',
@@ -96,9 +97,8 @@ export default function ChatWidget() {
         },
       ]);
       setInitialMessageSet(true);
-      fetchAllData();
     }
-  }, [user, initialMessageSet, setMessages, fetchAllData]);
+  }, [user, initialMessageSet, setMessages, messages.length]);
 
   const handleAnimationStart = () => {
     setIsAnimating(true);
@@ -155,9 +155,13 @@ export default function ChatWidget() {
   }, [isOpen]);
 
   const handleBadgeClick = (prompt: string) => {
-    const fakeInputEvent = { target: { value: prompt } } as any;
-    handleInputChange(fakeInputEvent);
-    inputRef.current?.focus();
+    if (usedPrompts.includes(prompt) || isLoading) return;
+
+    append({
+      content: prompt,
+      role: 'user',
+    });
+    setUsedPrompts([...usedPrompts, prompt]);
   };
 
   const openDimensions = {
@@ -219,55 +223,91 @@ export default function ChatWidget() {
       </div>
 
       <div className="mt-3">
-        <form
-          onSubmit={handleSubmit}
-          className="flex gap-2 items-center"
-        >
-          <Input
-            ref={inputRef}
-            className="flex-1 p-2 rounded-lg border border-border bg-card"
-            value={input}
-            placeholder="Type your message..."
-            onChange={handleInputChange}
-          />
-          <Button type="submit" variant="primary" size="sm">
-            Send
-          </Button>
-        </form>
+        {/* --- CONDITIONAL INPUT --- */}
+        {canUseFreeformInput ? (
+          <form
+            onSubmit={handleSubmit}
+            className="flex gap-2 items-center"
+          >
+            <Input
+              ref={inputRef}
+              className="flex-1 p-2 rounded-lg border border-border bg-card h-9"
+              value={input}
+              placeholder="Type your message..."
+              onChange={handleInputChange}
+              disabled={isLoading}
+            />
+            <Button
+              type="submit"
+              variant="primary"
+              size="sm"
+              disabled={isLoading}
+            >
+              Send
+            </Button>
+          </form>
+        ) : (
+          <div className="text-center">
+            <Link href="/subscription">
+              <Button variant="outline" className="w-full h-9">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Upgrade to Premium to ask anything
+              </Button>
+            </Link>
+          </div>
+        )}
 
         <div className="flex gap-2 flex-wrap mt-3">
-          <Badge
-            variant="outline"
-            className="cursor-pointer transition-transform duration-150 hover:scale-105 max-w-fit py-1 border-none bg-[--ui-primary] bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
+          <Button
+            variant="emoji"
+            size="sm"
+            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() =>
               handleBadgeClick('List my highest priority tasks')
+            }
+            disabled={
+              usedPrompts.includes(
+                'List my highest priority tasks'
+              ) || isLoading
             }
           >
             Priority tasks{' '}
             <AlarmClockCheck className="w-3 h-3 ml-1" />
-          </Badge>
-          <Badge
-            variant="outline"
-            className="cursor-pointer transition-transform duration-150 hover:scale-105 max-w-fit py-1 border-none bg-[--ui-primary] bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
+          </Button>
+          <Button
+            variant="emoji"
+            size="sm"
+            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() =>
               handleBadgeClick(
                 'Give me some advice on how to improve my productivity'
               )
             }
+            disabled={
+              usedPrompts.includes(
+                'Give me some advice on how to improve my productivity'
+              ) || isLoading
+            }
           >
             Get advice <GraduationCap className="w-3 h-3 ml-1" />
-          </Badge>
-          <Badge
-            variant="outline"
-            className="cursor-pointer transition-transform duration-150 hover:scale-105 max-w-fit py-1 border-none bg-[--ui-primary] bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity]"
+          </Button>
+          <Button
+            variant="emoji"
+            size="sm"
+            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() =>
               handleBadgeClick(
                 'Help me organize my schedule and tasks'
               )
             }
+            disabled={
+              usedPrompts.includes(
+                'Help me organize my schedule and tasks'
+              ) || isLoading
+            }
           >
             Organize <CalendarCheck className="w-3 h-3 ml-1" />
-          </Badge>
+          </Button>
         </div>
       </div>
     </div>
@@ -397,6 +437,7 @@ export default function ChatWidget() {
   );
 }
 
+// ... (PomodoroWidget, WeatherWidget, and ClockWidget components remain the same)
 function PomodoroWidget({
   time,
   isRunning,
