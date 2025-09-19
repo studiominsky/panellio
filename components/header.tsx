@@ -308,14 +308,14 @@ const Header = () => {
       setUser((prev) =>
         prev
           ? {
-              ...prev,
-              displayName: localSettings.displayName,
-              username: localSettings.username,
-              theme: localSettings.theme,
-              colorTheme: localSettings.colorTheme,
-              timeFormat: localSettings.timeFormat,
-              location: localSettings.location,
-            }
+            ...prev,
+            displayName: localSettings.displayName,
+            username: localSettings.username,
+            theme: localSettings.theme,
+            colorTheme: localSettings.colorTheme,
+            timeFormat: localSettings.timeFormat,
+            location: localSettings.location,
+          }
           : prev
       );
 
@@ -524,11 +524,10 @@ const Header = () => {
                     <Link
                       href={link}
                       scroll={false}
-                      className={`text-sm text-foreground/60 hover:text-inverted ${
-                        (pathname === link ||
-                          pathname.startsWith(`${link}/`)) &&
+                      className={`text-sm text-foreground/60 hover:text-inverted ${(pathname === link ||
+                        pathname.startsWith(`${link}/`)) &&
                         `text-inverted bg-bottom-border border-b-[1px] border-foreground/100`
-                      }`}
+                        }`}
                     >
                       {link.replace('/', '').charAt(0).toUpperCase() +
                         link.slice(2)}
@@ -553,11 +552,10 @@ const Header = () => {
             >
               <div className="w-2 h-2 bg-[--ui-primary] rounded-full" />
               <span
-                className={`flex text-sm text-foreground/60 hover:text-inverted duration-300 transition-all ${
-                  (pathname === `/${currentUsername}/` ||
-                    pathname.startsWith(`/${currentUsername}/`)) &&
+                className={`flex text-sm text-foreground/60 hover:text-inverted duration-300 transition-all ${(pathname === `/${currentUsername}/` ||
+                  pathname.startsWith(`/${currentUsername}/`)) &&
                   `text-foreground/100 font-bold`
-                }`}
+                  }`}
               >
                 {user.displayName}&apos;s directories
               </span>
@@ -576,10 +574,9 @@ const Header = () => {
               >
                 <div className="w-2 h-2 bg-[--ui-primary] rounded-full" />
                 <span
-                  className={`flex text-sm text-foreground/60 hover:text-inverted duration-300 transition-all ${
-                    pathname === `/${currentUsername}` &&
+                  className={`flex text-sm text-foreground/60 hover:text-inverted duration-300 transition-all ${pathname === `/${currentUsername}` &&
                     `text-inverted`
-                  }`}
+                    }`}
                 >
                   {user.displayName}&apos;s directories
                 </span>
@@ -631,11 +628,10 @@ const Header = () => {
                                   : option.value
                               )
                             }
-                            className={`p-2 rounded-full border hover:bg-transparent ${
-                              emoji === option.value
-                                ? 'border-[--ui-primary]'
-                                : ''
-                            } hover:border-[--ui-primary]`}
+                            className={`p-2 rounded-full border hover:bg-transparent ${emoji === option.value
+                              ? 'border-[--ui-primary]'
+                              : ''
+                              } hover:border-[--ui-primary]`}
                           >
                             {option.emoji}
                           </Button>
@@ -707,7 +703,7 @@ const Header = () => {
                     Update your user information and preferences.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4">
+                <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-4">
                   <div>
                     <label className="block mb-2 mt-4 text-sm font-medium text-muted-foreground">
                       Name
@@ -828,20 +824,21 @@ const Header = () => {
                       </Button>
                     </div>
                   </div>
+                </div>
 
-                  <div className="border-[0.5px] border-border my-4"></div>
-
-                  <Button
-                    variant="destructiveLink"
-                    onClick={() => setDeleteDialogOpen(true)}
-                    className="mt-4 p-0"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Account
-                  </Button>
+                <DialogFooter className="mt-4">
+                  <div className="mr-auto">
+                    <Button
+                      variant="destructiveLink"
+                      onClick={() => setDeleteDialogOpen(true)}
+                      className="p-0"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete Account
+                    </Button>
+                  </div>
 
                   <Button
                     onClick={handleUpdateSettings}
-                    className="w-full"
                     disabled={
                       !hasUnsavedChanges() || isCheckingUsername
                     }
@@ -855,39 +852,39 @@ const Header = () => {
                       'Save changes'
                     )}
                   </Button>
+                </DialogFooter>
 
-                  <Dialog
-                    open={isDeleteDialogOpen}
-                    onOpenChange={setDeleteDialogOpen}
-                  >
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>
-                          Confirm Account Deletion
-                        </DialogTitle>
-                        <DialogDescription>
-                          Are you sure you want to delete your
-                          account? This action is irreversible, and
-                          all of your data will be lost.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter className="mt-4">
-                        <Button
-                          variant="primary"
-                          onClick={() => setDeleteDialogOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          onClick={handleDeleteAccount}
-                        >
-                          Delete Account
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                <Dialog
+                  open={isDeleteDialogOpen}
+                  onOpenChange={setDeleteDialogOpen}
+                >
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Confirm Account Deletion
+                      </DialogTitle>
+                      <DialogDescription>
+                        Are you sure you want to delete your
+                        account? This action is irreversible, and
+                        all of your data will be lost.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="mt-4">
+                      <Button
+                        variant="primary"
+                        onClick={() => setDeleteDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteAccount}
+                      >
+                        Delete Account
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </DialogContent>
             </Dialog>
 
@@ -924,28 +921,29 @@ const Header = () => {
         )}
       </div>
 
-      <MobileMenu />
+      <MobileMenu
+        onSettingsClick={() => setIsSettingsDialogOpen(true)}
+        onFeedbackClick={() => setIsFeedbackDialogOpen(true)}
+      />
     </div>
   );
 
   return (
     <div>
       <header
-        className={`sticky top-0 transition duration-300 z-10 pt-4 ${
-          isScrolled ? 'border-b' : ''
-        } ${
-          user &&
-          currentUsername &&
-          (pathname === `/${currentUsername}` ||
-            pathname.startsWith(`/${currentUsername}/`))
+        className={`sticky top-0 transition duration-300 z-10 pt-4 ${isScrolled ? 'border-b' : ''
+          } ${user &&
+            currentUsername &&
+            (pathname === `/${currentUsername}` ||
+              pathname.startsWith(`/${currentUsername}/`))
             ? 'bg-card'
             : 'bg-background'
-        }`}
+          }`}
       >
         {user &&
-        currentUsername &&
-        (pathname === `/${currentUsername}` ||
-          pathname.startsWith(`/${currentUsername}/`)) ? (
+          currentUsername &&
+          (pathname === `/${currentUsername}` ||
+            pathname.startsWith(`/${currentUsername}/`)) ? (
           <Full>{headerContent}</Full>
         ) : (
           <Wide>{headerContent}</Wide>
