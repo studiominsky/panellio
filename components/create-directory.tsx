@@ -18,8 +18,9 @@ import { Button } from './ui/button';
 import { Loader, Sparkles } from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { usePlan } from '@/hooks/use-plan'; // 1. Import the plan hook
+import { usePlan } from '@/hooks/use-plan';
 import Link from 'next/link';
+import { LoadingSpinner } from './ui/loading-spinner';
 
 interface CreateDirectoryFormProps {
   onClose: () => void;
@@ -33,12 +34,16 @@ export default function CreateDirectoryForm({
   const [directoryName, setDirectoryName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
-  const { plan } = usePlan();
+  const { plan, loading: planLoading } = usePlan();
 
   const router = useRouter();
 
+  if (planLoading) {
+    return <LoadingSpinner />;
+  }
+
   const atDirectoryLimit =
-    directories.length >= plan.limits.directories;
+    directories.length >= (plan?.limits.directories || 0);
 
   const handleCreateDirectory = async () => {
     if (atDirectoryLimit) {
@@ -159,7 +164,7 @@ export default function CreateDirectoryForm({
       {atDirectoryLimit ? (
         <div className="mt-4 text-center">
           <p className="text-sm font-bold text-destructive">
-            You've reached your limit of {plan.limits.directories}{' '}
+            You've reached your limit of {plan?.limits.directories}{' '}
             directories.
           </p>
           <p className="text-sm text-muted-foreground">
@@ -193,11 +198,10 @@ export default function CreateDirectoryForm({
           <Button
             onClick={handleCreateDirectory}
             disabled={isCreateDisabled}
-            className={`w-full mt-4 ${
-              isCreateDisabled
-                ? 'cursor-not-allowed opacity-50'
-                : 'hover:opacity-90'
-            }`}
+            className={`w-full mt-4 ${isCreateDisabled
+              ? 'cursor-not-allowed opacity-50'
+              : 'hover:opacity-90'
+              }`}
           >
             {loading ? (
               <div className="flex items-center gap-2">
