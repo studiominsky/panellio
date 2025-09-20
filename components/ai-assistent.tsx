@@ -88,7 +88,7 @@ export default function AIAssistant() {
               className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`p-3 rounded-lg max-w-[70%] bg-card border border-border text-inverted`}
+                className={`p-3 rounded-lg max-w-[100%] sm:max-w-[70%] bg-card border border-border text-inverted`}
               >
                 {m.role === 'user' ? (
                   <p className="text-sm">{m.content}</p>
@@ -144,7 +144,7 @@ export default function AIAssistant() {
       )}
 
       <div className="flex gap-3 flex-wrap mt-4 pr-6">
-        <ColorThemeProvider className='flex gap-2'>
+        <ColorThemeProvider className='flex flex-col sm:flex-row gap-2'>
           <Button
             variant="emoji"
             className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"

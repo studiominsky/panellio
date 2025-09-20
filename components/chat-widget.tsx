@@ -197,7 +197,7 @@ export default function ChatWidget() {
                   }`}
               >
                 <div
-                  className={`p-3 rounded-lg max-w-[85%] bg-card border border-border text-foreground`}
+                  className={`p-3 rounded-lg max-w-[100%] sm:max-w-[85%] bg-card border border-border text-foreground`}
                 >
                   {m.role === 'user' ? (
                     <p className="text-sm">{m.content}</p>
@@ -256,7 +256,7 @@ export default function ChatWidget() {
         )}
 
         <div className="flex gap-2 flex-wrap mt-3">
-          <ColorThemeProvider className='flex gap-2'>
+          <ColorThemeProvider className='flex flex-col sm:flex-row gap-2'>
             <Button
               variant="emoji"
               size="sm"
