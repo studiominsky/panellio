@@ -320,7 +320,7 @@ export default function Subscription() {
           </span>
           <span className="flex items-center gap-2 mb-2">
             <CircleCheckBig size={20} />
-            Custom features based on your needs
+            Custom features
           </span>
           <span className="flex items-center gap-2 mb-2">
             <CircleCheckBig size={20} />
