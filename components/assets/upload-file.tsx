@@ -1,3 +1,5 @@
+// components/assets/upload-file.tsx
+
 import { useAuth } from '@/context/auth-context';
 import { useState } from 'react';
 import { uploadFile } from '@/services/assets-service';
@@ -5,6 +7,7 @@ import { toast } from '@/hooks/use-toast';
 import { Button } from '../ui/button';
 import { Loader } from 'lucide-react';
 import { FileInput } from '../ui/file-input';
+import { usePlan } from '@/hooks/use-plan';
 
 interface UploadFileProps {
   directoryId: string;
@@ -22,6 +25,7 @@ export function UploadFile({
   existingFileNames = [],
 }: UploadFileProps) {
   const { user } = useAuth();
+  const { plan } = usePlan();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDuplicate, setIsDuplicate] = useState(false);
@@ -35,7 +39,7 @@ export function UploadFile({
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file || !plan) return;
 
     if (existingFileNames.includes(file.name)) {
       setIsDuplicate(true);

@@ -12,7 +12,7 @@ import {
   CloudLightning,
   CloudFog,
   Maximize2,
-  Sparkles, // Import Sparkles for the upgrade button
+  Sparkles,
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -33,8 +33,9 @@ import {
   CalendarCheck,
   GraduationCap,
 } from 'lucide-react';
-import { usePlan } from '@/hooks/use-plan'; // 1. Import the plan hook
+import { usePlan } from '@/hooks/use-plan';
 import Link from 'next/link';
+import { ColorThemeProvider } from '@/providers/color-theme-provider';
 
 const WEATHER_API_KEY = process.env.NEXT_PUBLIC_OPEN_WEATHER_API_KEY;
 const DEFAULT_CITY = 'Vienna';
@@ -51,10 +52,10 @@ export default function ChatWidget() {
   );
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [initialMessageSet, setInitialMessageSet] = useState(false);
-  const [usedPrompts, setUsedPrompts] = useState<string[]>([]); // For click-once logic
+  const [usedPrompts, setUsedPrompts] = useState<string[]>([]);
 
   const { user } = useAuth();
-  const { plan } = usePlan(); // 2. Use the plan hook
+  const { plan } = usePlan();
   const { directories, tasks, events, habits, dailies } = useData();
 
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -83,7 +84,7 @@ export default function ChatWidget() {
     },
   });
 
-  const canUseFreeformInput = plan.limits.hasFreeformAi;
+  const canUseFreeformInput = plan?.limits.hasFreeformAi;
 
   useEffect(() => {
     if (user && !initialMessageSet && messages.length <= 1) {
@@ -91,9 +92,8 @@ export default function ChatWidget() {
         {
           id: 'welcome-message',
           role: 'assistant',
-          content: `Hi ${
-            user.displayName || user.email
-          }. How can I assist you?`,
+          content: `Hi ${user.displayName || user.email
+            }. How can I assist you?`,
         },
       ]);
       setInitialMessageSet(true);
@@ -170,7 +170,7 @@ export default function ChatWidget() {
   };
 
   const widgetsRow = (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+    <div className="hidden md:grid grid-cols-3 gap-3 mb-4">
       <ClockWidget userLocation={user?.location || DEFAULT_CITY} />
       <WeatherWidget userLocation={user?.location || DEFAULT_CITY} />
       <PomodoroWidget
@@ -193,9 +193,8 @@ export default function ChatWidget() {
             {messages.map((m) => (
               <div
                 key={m.id}
-                className={`flex ${
-                  m.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
               >
                 <div
                   className={`p-3 rounded-lg max-w-[85%] bg-card border border-border text-foreground`}
@@ -223,7 +222,6 @@ export default function ChatWidget() {
       </div>
 
       <div className="mt-3">
-        {/* --- CONDITIONAL INPUT --- */}
         {canUseFreeformInput ? (
           <form
             onSubmit={handleSubmit}
@@ -251,63 +249,65 @@ export default function ChatWidget() {
             <Link href="/subscription">
               <Button variant="outline" className="w-full h-9">
                 <Sparkles className="w-4 h-4 mr-2" />
-                Upgrade to Premium to ask anything
+                Premium to ask more
               </Button>
             </Link>
           </div>
         )}
 
         <div className="flex gap-2 flex-wrap mt-3">
-          <Button
-            variant="emoji"
-            size="sm"
-            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() =>
-              handleBadgeClick('List my highest priority tasks')
-            }
-            disabled={
-              usedPrompts.includes(
-                'List my highest priority tasks'
-              ) || isLoading
-            }
-          >
-            Priority tasks{' '}
-            <AlarmClockCheck className="w-3 h-3 ml-1" />
-          </Button>
-          <Button
-            variant="emoji"
-            size="sm"
-            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() =>
-              handleBadgeClick(
-                'Give me some advice on how to improve my productivity'
-              )
-            }
-            disabled={
-              usedPrompts.includes(
-                'Give me some advice on how to improve my productivity'
-              ) || isLoading
-            }
-          >
-            Get advice <GraduationCap className="w-3 h-3 ml-1" />
-          </Button>
-          <Button
-            variant="emoji"
-            size="sm"
-            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() =>
-              handleBadgeClick(
-                'Help me organize my schedule and tasks'
-              )
-            }
-            disabled={
-              usedPrompts.includes(
-                'Help me organize my schedule and tasks'
-              ) || isLoading
-            }
-          >
-            Organize <CalendarCheck className="w-3 h-3 ml-1" />
-          </Button>
+          <ColorThemeProvider className='flex gap-2'>
+            <Button
+              variant="emoji"
+              size="sm"
+              className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() =>
+                handleBadgeClick('List my highest priority tasks')
+              }
+              disabled={
+                usedPrompts.includes(
+                  'List my highest priority tasks'
+                ) || isLoading
+              }
+            >
+              Priority tasks <AlarmClockCheck className="w-3 h-3 ml-1" />
+            </Button>
+            <Button
+              variant="emoji"
+              size="sm"
+              className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() =>
+                handleBadgeClick(
+                  'Give me some advice on how to improve my productivity'
+                )
+              }
+              disabled={
+                usedPrompts.includes(
+                  'Give me some advice on how to improve my productivity'
+                ) || isLoading
+              }
+            >
+              Get advice <GraduationCap className="w-3 h-3 ml-1" />
+            </Button>
+            <Button
+              variant="emoji"
+              size="sm"
+              className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() =>
+                handleBadgeClick(
+                  'Help me organize my schedule and tasks'
+                )
+              }
+              disabled={
+                usedPrompts.includes(
+                  'Help me organize my schedule and tasks'
+                ) || isLoading
+              }
+            >
+              Organize <CalendarCheck className="w-3 h-3 ml-1" />
+            </Button>
+          </ColorThemeProvider>
+
         </div>
       </div>
     </div>
@@ -371,13 +371,12 @@ export default function ChatWidget() {
           )}
         </AnimatePresence>
         <motion.div
-          className={`absolute bottom-[-10px] right-0 z-10 ${
-            isRunning
-              ? state === 'active'
-                ? 'bg-red-800 hover:bg-red-900'
-                : 'bg-green-800 hover:bg-green-900'
-              : 'bg-background'
-          } outline outline-1 outline-border rounded-full flex items-center justify-center cursor-pointer hover:bg-muted duration-300`}
+          className={`absolute bottom-[-10px] right-0 z-10 ${isRunning
+            ? state === 'active'
+              ? 'bg-red-800 hover:bg-red-900'
+              : 'bg-green-800 hover:bg-green-900'
+            : 'bg-background'
+            } outline outline-1 outline-border rounded-full flex items-center justify-center cursor-pointer hover:bg-muted duration-300`}
           style={{ width: 62, height: 62 }}
           onClick={(e) => {
             e.stopPropagation();
@@ -394,9 +393,8 @@ export default function ChatWidget() {
                 transition={{ duration: 0.2 }}
               >
                 <X
-                  className={`w-6 h-6 transition-transform duration-200 ${
-                    isRunning ? 'text-white' : ''
-                  }`}
+                  className={`w-6 h-6 transition-transform duration-200 ${isRunning ? 'text-white' : ''
+                    }`}
                 />
               </motion.div>
             ) : (
@@ -430,14 +428,16 @@ export default function ChatWidget() {
           <DialogTitle className="sr-only">
             AI Assistant Fullscreen
           </DialogTitle>
+
           {chatUI}
+
+
         </DialogContent>
       </Dialog>
     </>
   );
 }
 
-// ... (PomodoroWidget, WeatherWidget, and ClockWidget components remain the same)
 function PomodoroWidget({
   time,
   isRunning,
@@ -530,9 +530,7 @@ function WeatherWidget({ userLocation }: { userLocation: string }) {
             icon = <Sun className="w-6 h-6 text-yellow-500" />;
             break;
           case 'clouds':
-            icon = (
-              <Cloud className="w-6 h-6 text-muted-foreground" />
-            );
+            icon = <Cloud className="w-6 h-6 text-muted-foreground" />;
             break;
           case 'rain':
             icon = <CloudRain className="w-6 h-6 text-blue-500" />;
@@ -550,9 +548,7 @@ function WeatherWidget({ userLocation }: { userLocation: string }) {
             icon = <CloudFog className="w-6 h-6 text-gray-400" />;
             break;
           default:
-            icon = (
-              <Cloud className="w-6 h-6 text-muted-foreground" />
-            );
+            icon = <Cloud className="w-6 h-6 text-muted-foreground" />;
             break;
         }
 

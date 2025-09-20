@@ -29,6 +29,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from './ui/dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useAuth } from '@/context/auth-context';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
@@ -39,6 +45,8 @@ import { Button } from './ui/button';
 import { Directory } from '@/types/directory-type';
 import CreateDirectoryForm from './create-directory';
 import CreateStickyNoteForm from './sticky-notes/create-sticky-note-form';
+import { usePlan } from '@/hooks/use-plan';
+import Link from 'next/link';
 
 interface DirectorySettingsProps {
   directory: Directory;
@@ -59,6 +67,7 @@ export default function DirectorySettings({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { removeDirectory, editDirectory } = useDirectoryContext();
   const [isSaving, setIsSaving] = useState(false);
+  const { planName } = usePlan();
 
   const [
     isCreateStickyNoteDialogOpen,
@@ -173,16 +182,38 @@ export default function DirectorySettings({
                 </MenubarShortcut>
               </MenubarItem>
               <MenubarSeparator />
-
-              <MenubarItem
-                disabled={hasFeature('assets')}
-                onClick={() => handleAddItemClick('assets')}
-              >
-                Assets
-                <MenubarShortcut>
-                  <Folders size={14} />
-                </MenubarShortcut>
-              </MenubarItem>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="relative">
+                      <MenubarItem
+                        disabled={
+                          hasFeature('assets') || planName === 'core'
+                        }
+                        onClick={() => handleAddItemClick('assets')}
+                      >
+                        Assets
+                        <MenubarShortcut>
+                          <Folders size={14} />
+                        </MenubarShortcut>
+                      </MenubarItem>
+                    </div>
+                  </TooltipTrigger>
+                  {planName === 'core' && (
+                    <TooltipContent>
+                      <p>
+                        Upgrade to Pro or Premium to use Assets.{' '}
+                        <Link
+                          href="/subscription"
+                          className="text-primary underline"
+                        >
+                          Upgrade now
+                        </Link>
+                      </p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
 
               <MenubarSeparator />
 

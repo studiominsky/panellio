@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { usePlan } from '@/hooks/use-plan';
 import Link from 'next/link';
+import { ColorThemeProvider } from '@/providers/color-theme-provider';
 
 export default function AIAssistant() {
   const { user } = useAuth();
@@ -52,7 +53,7 @@ export default function AIAssistant() {
 
   const [initialMessageSet, setInitialMessageSet] = useState(false);
 
-  const canUseFreeformInput = plan.limits.hasFreeformAi;
+  const canUseFreeformInput = plan?.limits.hasFreeformAi;
 
   useEffect(() => {
     if (user && !initialMessageSet && messages.length <= 1) {
@@ -132,61 +133,64 @@ export default function AIAssistant() {
           </Button>
         </form>
       ) : (
-        <div className="text-center p-2 mt-3 pr-6">
+        <div className="text-start p-2 mt-3 pr-6">
           <Link href="/subscription">
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full text-start">
               <Sparkles className="w-4 h-4 mr-2" />
-              Upgrade to Premium to ask anything
+              Premium to ask more
             </Button>
           </Link>
         </div>
       )}
 
       <div className="flex gap-3 flex-wrap mt-4 pr-6">
-        <Button
-          variant="emoji"
-          className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() =>
-            handleBadgeClick('List my highest priority tasks')
-          }
-          disabled={
-            usedPrompts.includes('List my highest priority tasks') ||
-            isLoading
-          }
-        >
-          List priority tasks{' '}
-          <AlarmClockCheck className="w-4 h-4 ml-2" />
-        </Button>
-        <Button
-          variant="emoji"
-          className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() =>
-            handleBadgeClick(
-              'Give me some advice on how to improve my productivity'
-            )
-          }
-          disabled={
-            usedPrompts.includes(
-              'Give me some advice on how to improve my productivity'
-            ) || isLoading
-          }
-        >
-          Get advice <GraduationCap className="w-4 h-4 ml-2" />
-        </Button>
-        <Button
-          variant="emoji"
-          className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={() =>
-            handleBadgeClick('Help me organize my schedule and tasks')
-          }
-          disabled={
-            usedPrompts.includes(
-              'Help me organize my schedule and tasks'
-            ) || isLoading
-          }
-        >
-          Help me organize <CalendarCheck className="w-4 h-4 ml-2" />
-        </Button>
+        <ColorThemeProvider className='flex gap-2'>
+          <Button
+            variant="emoji"
+            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() =>
+              handleBadgeClick('List my highest priority tasks')
+            }
+            disabled={
+              usedPrompts.includes('List my highest priority tasks') ||
+              isLoading
+            }
+          >
+            List priority tasks{' '}
+            <AlarmClockCheck className="w-4 h-4 ml-2" />
+          </Button>
+          <Button
+            variant="emoji"
+            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() =>
+              handleBadgeClick(
+                'Give me some advice on how to improve my productivity'
+              )
+            }
+            disabled={
+              usedPrompts.includes(
+                'Give me some advice on how to improve my productivity'
+              ) || isLoading
+            }
+          >
+            Get advice <GraduationCap className="w-4 h-4 ml-2" />
+          </Button>
+          <Button
+            variant="emoji"
+            className="h-auto transition-transform duration-150 hover:scale-105 mb-1 max-w-fit py-1 px-2.5 rounded-full border-none bg-[--ui-soft] text-black dark:text-[--ui-primary] dark:bg-[--ui-primary-opacity] text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() =>
+              handleBadgeClick('Help me organize my schedule and tasks')
+            }
+            disabled={
+              usedPrompts.includes(
+                'Help me organize my schedule and tasks'
+              ) || isLoading
+            }
+          >
+            Help me organize <CalendarCheck className="w-4 h-4 ml-2" />
+          </Button>
+        </ColorThemeProvider>
+
       </div>
     </>
   );

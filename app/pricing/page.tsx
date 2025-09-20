@@ -103,8 +103,11 @@ export default function Pricing() {
                 <CircleX size={20} />
                 No file storage included
               </span>
+              <span className="flex items-center gap-2 mb-2">
+                <CircleCheckBig size={20} />
+                Limited AI Assistant
+              </span>
             </div>
-            {/* Pro Plan */}
             <div className="flex flex-col w-full  border bg-card border-[--ui-primary] rounded-xl p-6 md:p-8 lg:w-1/3 lg:mt-[-30px]">
               <span className="text-4xl font-bold flex items-center gap-2">
                 <Boxes size={30} />
@@ -127,7 +130,7 @@ export default function Pricing() {
                 </Link>
               </Button>
               <span className="my-4 text-foreground/60">
-                Everything in Core, plus:
+                The Pro plan includes:
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
@@ -143,10 +146,13 @@ export default function Pricing() {
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                100MB of file storage
+                1Gb of file storage
+              </span>
+              <span className="flex items-center gap-2 mb-2">
+                <CircleCheckBig size={20} />
+                Limited AI Assistant
               </span>
             </div>
-            {/* Premium Plan */}
             <div className="flex flex-col w-full border bg-card border-border rounded-xl p-6 md:p-8 lg:w-1/3">
               <span className="text-4xl font-bold flex items-center gap-2">
                 <Crown size={30} />
@@ -174,7 +180,7 @@ export default function Pricing() {
                 </Link>
               </Button>
               <span className="my-4 text-foreground/60">
-                Everything in Pro, plus:
+                The Premium plan includes:
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
@@ -190,7 +196,7 @@ export default function Pricing() {
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                500MB of file storage
+                10Gb of file storage
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
@@ -198,7 +204,11 @@ export default function Pricing() {
               </span>
               <span className="flex items-center gap-2 mb-2">
                 <CircleCheckBig size={20} />
-                Integrated AI assistant
+                Custom features based on your needs
+              </span>
+              <span className="flex items-center gap-2 mb-2">
+                <CircleCheckBig size={20} />
+                Full AI Assistant
               </span>
             </div>
           </div>

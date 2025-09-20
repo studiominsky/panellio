@@ -1,4 +1,4 @@
-// assets-service.ts
+// services/assets-service.ts
 
 import { storage, db } from '@/lib/firebase';
 import {
@@ -16,9 +16,12 @@ import {
   getDocs,
   getDoc,
   arrayRemove,
+  query,
+  where,
 } from 'firebase/firestore';
 
 import { User } from 'firebase/auth';
+import { plans } from '@/lib/plans';
 
 export const createFolder = async (
   user: User | null,
@@ -44,6 +47,30 @@ export const createFolder = async (
   });
 };
 
+export const getUserStorageUsage = async (
+  userId: string
+): Promise<number> => {
+  const directoriesRef = collection(db, 'users', userId, 'directories');
+  const directoriesSnapshot = await getDocs(directoriesRef);
+
+  let totalSize = 0;
+
+  for (const directoryDoc of directoriesSnapshot.docs) {
+    const foldersRef = collection(directoryDoc.ref, 'folders');
+    const foldersSnapshot = await getDocs(foldersRef);
+
+    for (const folderDoc of foldersSnapshot.docs) {
+      const filesRef = collection(folderDoc.ref, 'files');
+      const filesSnapshot = await getDocs(filesRef);
+      filesSnapshot.forEach((fileDoc) => {
+        totalSize += fileDoc.data().size || 0;
+      });
+    }
+  }
+
+  return totalSize;
+};
+
 export const uploadFile = async (
   user: User | null,
   file: File,
@@ -52,6 +79,23 @@ export const uploadFile = async (
 ): Promise<void> => {
   if (!user) {
     throw new Error('User is not authenticated');
+  }
+
+  const userDocRef = doc(db, 'users', user.uid);
+  const userDoc = await getDoc(userDocRef);
+  const userPlan = userDoc.data()?.stripeRole || 'core'; // Corrected this line
+  const planLimits = plans[userPlan as keyof typeof plans].limits;
+
+  if (planLimits.storage === 0) {
+    throw new Error(
+      'Your current plan does not allow file uploads.'
+    );
+  }
+
+  const currentUsage = await getUserStorageUsage(user.uid);
+
+  if (currentUsage + file.size > planLimits.storage) {
+    throw new Error('Storage limit exceeded.');
   }
 
   const fileRef = ref(

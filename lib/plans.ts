@@ -5,6 +5,7 @@ export const plans = {
     limits: {
       directories: 3,
       hasFreeformAi: false,
+      storage: 0,
     },
   },
   pro: {
@@ -13,6 +14,7 @@ export const plans = {
     limits: {
       directories: Infinity,
       hasFreeformAi: false,
+      storage: 1073741824,
     },
   },
   premium: {
@@ -21,6 +23,7 @@ export const plans = {
     limits: {
       directories: Infinity,
       hasFreeformAi: true,
+      storage: 10737418240,
     },
   },
 };

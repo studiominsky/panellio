@@ -1,3 +1,5 @@
+// components/assets/list-files-and-folders.tsx
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { db } from '@/lib/firebase';
 import {
@@ -67,9 +69,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import Image from 'next/image';
-import { deleteAssets } from '@/services/assets-service';
+import { deleteAssets, getUserStorageUsage } from '@/services/assets-service';
 import { LoadingSpinner } from '../ui/loading-spinner';
 import { DirectoryItem } from '@/types/directory-type';
+import { Plan, usePlan } from '@/hooks/use-plan';
+import { Progress } from '@/components/ui/progress';
+import { formatBytes } from '@/lib/utils';
 
 type ColorTheme = 'orange' | 'green' | 'blue' | 'light' | 'dark';
 
@@ -91,6 +96,7 @@ export const ListFilesAndFolders: React.FC<
   ListFilesAndFoldersProps
 > = ({ directoryId, onDirectoryItemRemoved, itemData }) => {
   const { user } = useAuth();
+  const { plan, loading: planLoading } = usePlan();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<{ [key: string]: FileData[] }>(
     {}
@@ -128,7 +134,6 @@ export const ListFilesAndFolders: React.FC<
   const [isDeleteAssetsDialogOpen, setIsDeleteAssetsDialogOpen] =
     useState(false);
 
-  // View mode states
   const [directoryViewMode, setDirectoryViewMode] = useState<
     'list' | 'icons'
   >('icons');
@@ -136,8 +141,20 @@ export const ListFilesAndFolders: React.FC<
     [folderId: string]: 'list' | 'icons';
   }>({});
   const [viewMode, setViewMode] = useState<'list' | 'icons'>('icons');
+  const [storageUsage, setStorageUsage] = useState(0);
 
   const menubarRef = useRef<HTMLDivElement>(null);
+
+  const fetchStorageUsage = useCallback(async () => {
+    if (user) {
+      const usage = await getUserStorageUsage(user.uid);
+      setStorageUsage(usage);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchStorageUsage();
+  }, [fetchStorageUsage]);
 
   useEffect(() => {
     const themeColor =
@@ -403,9 +420,8 @@ export const ListFilesAndFolders: React.FC<
       );
       await updateDoc(itemRef, { name: newName });
       toast({
-        title: `${
-          renamingType.charAt(0).toUpperCase() + renamingType.slice(1)
-        } renamed successfully`,
+        title: `${renamingType.charAt(0).toUpperCase() + renamingType.slice(1)
+          } renamed successfully`,
       });
       setRenamingItem(null);
       setNewName('');
@@ -526,9 +542,8 @@ export const ListFilesAndFolders: React.FC<
       );
       await deleteDoc(itemRef);
       toast({
-        title: `${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        } deleted successfully`,
+        title: `${type.charAt(0).toUpperCase() + type.slice(1)
+          } deleted successfully`,
       });
 
       type === 'folder'
@@ -538,6 +553,8 @@ export const ListFilesAndFolders: React.FC<
       if (selectedFolderId === id) {
         handleNavigateBack();
       }
+
+      fetchStorageUsage();
     } catch (error) {
       toast({
         title: 'Error',
@@ -770,8 +787,8 @@ export const ListFilesAndFolders: React.FC<
                   <span className="text-sm text-muted-foreground ml-2">
                     {file.size >= 1024 * 1024
                       ? `(${(file.size / (1024 * 1024)).toFixed(
-                          2
-                        )} MB)`
+                        2
+                      )} MB)`
                       : `(${(file.size / 1024).toFixed(2)} KB)`}
                   </span>
                 </div>
@@ -913,6 +930,10 @@ export const ListFilesAndFolders: React.FC<
     setSelectedFolderId(null);
     setViewMode(directoryViewMode);
   };
+
+  if (planLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div
@@ -1103,6 +1124,36 @@ export const ListFilesAndFolders: React.FC<
           </div>
         </Menubar>
         <div className="relative h-full overflow-auto p-4 border-l border-r border-b border-border bg-card">
+          {plan && (
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <p>
+                  Storage: {formatBytes(storageUsage)} /{' '}
+                  {plan.limits.storage > 0
+                    ? formatBytes(plan.limits.storage)
+                    : '0 MB'}
+                </p>
+                <p>
+                  {plan.limits.storage > 0
+                    ? (
+                      (storageUsage / plan.limits.storage) *
+                      100
+                    ).toFixed(2)
+                    : '0'}
+                  %
+                </p>
+              </div>
+              <Progress
+                value={
+                  plan.limits.storage > 0
+                    ? (storageUsage / plan.limits.storage) * 100
+                    : 0
+                }
+                className="w-full"
+              />
+            </div>
+          )}
+
           {loading ? (
             <LoadingSpinner />
           ) : selectedFolderId ? (
@@ -1111,7 +1162,6 @@ export const ListFilesAndFolders: React.FC<
             renderFolders()
           )}
 
-          {/* Dialog for Adding Files */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent>
               <DialogHeader>
@@ -1126,13 +1176,15 @@ export const ListFilesAndFolders: React.FC<
                   folderId={selectedFolderId || ''}
                   existingFileNames={existingFileNames}
                   onClose={() => setIsDialogOpen(false)}
-                  refreshList={() => fetchFiles(selectedFolderId!)}
+                  refreshList={() => {
+                    fetchFiles(selectedFolderId!);
+                    fetchStorageUsage();
+                  }}
                 />
               </div>
             </DialogContent>
           </Dialog>
 
-          {/* Dialog for Adding Folders */}
           <Dialog
             open={isFolderDialogOpen}
             onOpenChange={setIsFolderDialogOpen}
@@ -1162,7 +1214,6 @@ export const ListFilesAndFolders: React.FC<
             </DialogContent>
           </Dialog>
 
-          {/* Dialog for Renaming */}
           <Dialog
             open={isRenameDialogOpen}
             onOpenChange={setIsRenameDialogOpen}
@@ -1195,7 +1246,6 @@ export const ListFilesAndFolders: React.FC<
             </DialogContent>
           </Dialog>
 
-          {/* Alert Dialog for Delete Confirmation */}
           {deletingItem && (
             <Dialog
               open={!!deletingItem}
@@ -1231,7 +1281,6 @@ export const ListFilesAndFolders: React.FC<
             </Dialog>
           )}
 
-          {/* Delete Assets Dialog */}
           <Dialog
             open={isDeleteAssetsDialogOpen}
             onOpenChange={() => setIsDeleteAssetsDialogOpen(false)}
