@@ -65,6 +65,7 @@ import {
 } from '@/context/time-format-context';
 import Logo from './logo';
 import MobileMenu from './mobile-menu';
+import { LoadingSpinner } from './ui/loading-spinner';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -518,23 +519,26 @@ const Header = () => {
         {!user && !loading && (
           <nav className="hidden md:flex">
             <ul className="flex md:gap-3 lg:gap-10 items-center">
-              {['/story', '/resources', '/pricing', '/support'].map(
-                (link, index) => (
-                  <li key={index}>
-                    <Link
-                      href={link}
-                      scroll={false}
-                      className={`text-sm text-foreground/60 hover:text-inverted ${(pathname === link ||
+              {[
+                '/story',
+                '/resources',
+                '/pricing',
+                '/support',
+              ].map((link, index) => (
+                <li key={index}>
+                  <Link
+                    href={link}
+                    scroll={false}
+                    className={`text-sm text-foreground/60 hover:text-inverted ${(pathname === link ||
                         pathname.startsWith(`${link}/`)) &&
-                        `text-inverted bg-bottom-border border-b-[1px] border-foreground/100`
-                        }`}
-                    >
-                      {link.replace('/', '').charAt(0).toUpperCase() +
-                        link.slice(2)}
-                    </Link>
-                  </li>
-                )
-              )}
+                      `text-inverted bg-bottom-border border-b-[1px] border-foreground/100`
+                      }`}
+                  >
+                    {link.replace('/', '').charAt(0).toUpperCase() +
+                      link.slice(2)}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         )}
@@ -553,7 +557,7 @@ const Header = () => {
               <div className="w-2 h-2 bg-[--ui-primary] rounded-full" />
               <span
                 className={`flex text-sm text-foreground/60 hover:text-inverted duration-300 transition-all ${(pathname === `/${currentUsername}/` ||
-                  pathname.startsWith(`/${currentUsername}/`)) &&
+                    pathname.startsWith(`/${currentUsername}/`)) &&
                   `text-foreground/100 font-bold`
                   }`}
               >
@@ -629,8 +633,8 @@ const Header = () => {
                               )
                             }
                             className={`p-2 rounded-full border hover:bg-transparent ${emoji === option.value
-                              ? 'border-[--ui-primary]'
-                              : ''
+                                ? 'border-[--ui-primary]'
+                                : ''
                               } hover:border-[--ui-primary]`}
                           >
                             {option.emoji}
@@ -696,164 +700,185 @@ const Header = () => {
               >
                 <Settings className="mr-2 h-4 w-4" /> Settings
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="flex flex-col h-[90vh] sm:h-auto">
                 <DialogHeader>
                   <DialogTitle>Settings</DialogTitle>
                   <DialogDescription>
                     Update your user information and preferences.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-4">
-                  <div>
-                    <label className="block mb-2 mt-4 text-sm font-medium text-muted-foreground">
-                      Name
-                    </label>
-                    <Input
-                      type="text"
-                      value={localSettings.displayName}
-                      onChange={handleInputUserNameChange}
-                      placeholder="Enter your name"
-                    />
-                  </div>
+                {loading || !user ? (
+                  <LoadingSpinner />
+                ) : (
+                  <>
+                    <div className="space-y-4 flex-1 overflow-y-auto pr-4 pb-4">
+                      <div>
+                        <label className="block mb-2 mt-4 text-sm font-medium text-muted-foreground">
+                          Name
+                        </label>
+                        <Input
+                          type="text"
+                          value={localSettings.displayName}
+                          onChange={handleInputUserNameChange}
+                          placeholder="Enter your name"
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm mb-2 mt-4 font-medium text-muted-foreground">
-                      Username
-                    </label>
-                    <Input
-                      type="text"
-                      value={localSettings.username}
-                      onChange={handleInputUsernameChange}
-                      className={usernameInputClassName}
-                      placeholder="Enter your username"
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm mb-2 mt-4 font-medium text-muted-foreground">
+                          Username
+                        </label>
+                        <Input
+                          type="text"
+                          value={localSettings.username}
+                          onChange={handleInputUsernameChange}
+                          className={usernameInputClassName}
+                          placeholder="Enter your username"
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm mb-2 mt-4 font-medium text-muted-foreground">
-                      Location
-                    </label>
-                    <Input
-                      type="text"
-                      value={localSettings.location}
-                      onChange={handleLocationChange}
-                      placeholder="Enter your location"
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-sm mb-2 mt-4 font-medium text-muted-foreground">
+                          Location
+                        </label>
+                        <Input
+                          type="text"
+                          value={localSettings.location}
+                          onChange={handleLocationChange}
+                          placeholder="Enter your location"
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-sm mb-2 mt-4 font-medium text-muted-foreground">
-                      Time Format
-                    </label>
-                    <Select
-                      value={localSettings.timeFormat}
-                      onValueChange={(value) =>
-                        handleTimeFormatChange(value as TimeFormat)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Time Format" />
-                      </SelectTrigger>
-                      <SelectContent className="border-border shadow-none">
-                        <SelectItem value="24h">24-Hour</SelectItem>
-                        <SelectItem value="12h">
-                          12-Hour (AM/PM)
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div>
+                        <label className="block text-sm mb-2 mt-4 font-medium text-muted-foreground">
+                          Time Format
+                        </label>
+                        <Select
+                          value={localSettings.timeFormat}
+                          onValueChange={(value) =>
+                            handleTimeFormatChange(
+                              value as TimeFormat
+                            )
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Time Format" />
+                          </SelectTrigger>
+                          <SelectContent className="border-border shadow-none">
+                            <SelectItem value="24h">
+                              24-Hour
+                            </SelectItem>
+                            <SelectItem value="12h">
+                              12-Hour (AM/PM)
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div>
-                    <label className="block mt-4 mb-2 text-sm font-medium text-muted-foreground">
-                      Theme
-                    </label>
-                    <Select
-                      value={localSettings.theme}
-                      onValueChange={(value) =>
-                        handleThemeChange(value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="border-border shadow-none">
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div>
+                        <label className="block mt-4 mb-2 text-sm font-medium text-muted-foreground">
+                          Theme
+                        </label>
+                        <Select
+                          value={localSettings.theme}
+                          onValueChange={(value) =>
+                            handleThemeChange(value)
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="border-border shadow-none">
+                            <SelectItem value="light">
+                              Light
+                            </SelectItem>
+                            <SelectItem value="dark">Dark</SelectItem>
+                            <SelectItem value="system">
+                              System
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div className="flex gap-3 items-center justify-between">
-                    <label className="block text-sm font-medium text-muted-foreground">
-                      Accent Color
-                    </label>
-                    <ColorThemeSelector
-                      selectedColor={localSettings.colorTheme}
-                      onSelectColor={(color) =>
-                        handleColorThemeChange(color)
-                      }
-                    />
-                  </div>
+                      <div className="flex gap-3 items-center justify-between">
+                        <label className="block text-sm font-medium text-muted-foreground">
+                          Accent Color
+                        </label>
+                        <ColorThemeSelector
+                          selectedColor={localSettings.colorTheme}
+                          onSelectColor={(color) =>
+                            handleColorThemeChange(color)
+                          }
+                        />
+                      </div>
 
-                  <div className="flex gap-3 items-center justify-between">
-                    <label className="block text-sm font-medium text-muted-foreground">
-                      Email
-                    </label>
-                    <span className="text-sm text-foreground/80">
-                      {user.email}
-                    </span>
-                  </div>
+                      <div className="flex gap-3 items-center justify-between">
+                        <label className="block text-sm font-medium text-muted-foreground">
+                          Email
+                        </label>
+                        <span className="text-sm text-foreground/80">
+                          {user.email}
+                        </span>
+                      </div>
 
-                  <div className="border-[0.5px] border-border my-4"></div>
+                      <div className="border-[0.5px] border-border my-4"></div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-muted-foreground">
-                      Subscription
-                    </label>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-sm text-foreground/80 capitalize">
-                        {user.stripeRole} Plan
-                      </span>
+                      <div>
+                        <label className="block text-sm font-medium text-muted-foreground">
+                          Subscription
+                        </label>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-sm text-foreground/80 capitalize">
+                            {user.stripeRole} Plan
+                          </span>
 
-                      <Button variant="outline" asChild size="sm">
-                        <Link href="/subscription">
-                          <Sparkles className="mr-2 h-4 w-4" />
-                          Subscriptions
-                        </Link>
+                          <Button
+                            variant="outline"
+                            asChild
+                            size="sm"
+                          >
+                            <Link href="/subscription">
+                              <Sparkles className="mr-2 h-4 w-4" />
+                              Subscriptions
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-auto pt-4 border-t">
+                      <Button
+                        variant="destructiveLink"
+                        onClick={() => setDeleteDialogOpen(true)}
+                        className="p-0 mb-4"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete Account
+                      </Button>
+                      <Button
+                        onClick={handleUpdateSettings}
+                        disabled={
+                          !hasUnsavedChanges() ||
+                          isCheckingUsername ||
+                          loadingSave
+                        }
+                        className="w-full"
+                      >
+                        {loadingSave ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <Loader
+                              className="animate-spin"
+                              size={16}
+                            />
+                            Saving...
+                          </div>
+                        ) : (
+                          'Save changes'
+                        )}
                       </Button>
                     </div>
-                  </div>
-                </div>
-
-                <DialogFooter className="mt-4">
-                  <div className="mr-auto">
-                    <Button
-                      variant="destructiveLink"
-                      onClick={() => setDeleteDialogOpen(true)}
-                      className="p-0"
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" /> Delete Account
-                    </Button>
-                  </div>
-
-                  <Button
-                    onClick={handleUpdateSettings}
-                    disabled={
-                      !hasUnsavedChanges() || isCheckingUsername
-                    }
-                  >
-                    {loadingSave ? (
-                      <div className="flex items-center gap-2">
-                        <Loader className="animate-spin" size={16} />
-                        Saving...
-                      </div>
-                    ) : (
-                      'Save changes'
-                    )}
-                  </Button>
-                </DialogFooter>
-
+                  </>
+                )}
                 <Dialog
                   open={isDeleteDialogOpen}
                   onOpenChange={setDeleteDialogOpen}
