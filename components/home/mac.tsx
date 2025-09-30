@@ -4,17 +4,27 @@ import { useTheme } from 'next-themes';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { Info } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { useEffect, useState } from 'react';
 
 function Mac() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   if (!isDesktop) {
     return (
       <div className="w-full max-w-lg mx-auto px-4 my-8">
         <video
           src={
-            theme === 'dark' ? '/video-dark.mp4' : '/video-light.mp4'
+            resolvedTheme === 'dark' ? '/video-dark.mp4' : '/video-light.mp4'
           }
           autoPlay
           muted
@@ -152,7 +162,7 @@ function Mac() {
           >
             <video
               src={
-                theme === 'dark'
+                resolvedTheme === 'dark'
                   ? '/video-dark.mp4'
                   : '/video-light.mp4'
               }
