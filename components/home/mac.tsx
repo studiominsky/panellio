@@ -5,36 +5,52 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { Info } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { useEffect, useState } from 'react';
+import { LoadingSpinner } from '../ui/loading-spinner';
 
 function Mac() {
   const { resolvedTheme } = useTheme();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [mounted, setMounted] = useState(false);
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    setIsVideoLoading(true);
+  }, [resolvedTheme]);
+
   if (!mounted) {
     return null;
   }
 
+  const handleVideoLoad = () => {
+    setIsVideoLoading(false);
+  };
+
   if (!isDesktop) {
     return (
       <div className="w-full max-w-lg mx-auto px-4 my-8">
-        <video
-          src={
-            resolvedTheme === 'dark' ? '/video-dark.mp4' : '/video-light.mp4'
-          }
-          autoPlay
-          muted
-          loop
-          className="rounded-lg shadow-lg"
-          style={{
-            width: '100%',
-            height: 'auto',
-          }}
-        />
+        <div className="relative rounded-lg shadow-lg">
+          {isVideoLoading && <LoadingSpinner />}
+          <video
+            key={resolvedTheme}
+            src={
+              resolvedTheme === 'dark' ? '/video-dark.mp4' : '/video-light.mp4'
+            }
+            onCanPlay={handleVideoLoad}
+            autoPlay
+            muted
+            loop
+            className="rounded-lg"
+            style={{
+              width: '100%',
+              height: 'auto',
+              visibility: isVideoLoading ? 'hidden' : 'visible',
+            }}
+          />
+        </div>
         <div className="text-center mt-4 p-4 border border-border rounded-lg bg-card">
           <Badge
             variant="outline"
@@ -153,6 +169,13 @@ function Mac() {
             d="M112.846 657H1103.5V676C1103.5 678.209 1101.71 680 1099.5 680H116.846C114.637 680 112.846 678.209 112.846 676V657Z"
             fill="url(#paint8_linear_601_140)"
           />
+
+          {isVideoLoading && (
+            <foreignObject x="596" y="325.5" width="24" height="24">
+              <LoadingSpinner className="!static w-full h-full" />
+            </foreignObject>
+          )}
+
           <foreignObject
             x="124.5"
             y="18"
@@ -161,11 +184,13 @@ function Mac() {
             clipPath="url(#videoClipPath)"
           >
             <video
+              key={resolvedTheme}
               src={
                 resolvedTheme === 'dark'
                   ? '/video-dark.mp4'
                   : '/video-light.mp4'
               }
+              onCanPlay={handleVideoLoad}
               autoPlay
               muted
               loop
@@ -173,6 +198,7 @@ function Mac() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
+                visibility: isVideoLoading ? 'hidden' : 'visible',
               }}
             />
           </foreignObject>
