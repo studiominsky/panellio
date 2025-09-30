@@ -34,7 +34,7 @@ function Mac() {
       <div className="w-full max-w-lg mx-auto px-4 my-8">
         <div className="relative rounded-lg shadow-lg">
           {isVideoLoading && (
-            <LoadingSpinner className="text-neutral-800 dark:text-neutral-200" />
+            <LoadingSpinner className="text-white" />
           )}
           <video
             key={resolvedTheme}
@@ -171,10 +171,9 @@ function Mac() {
             d="M112.846 657H1103.5V676C1103.5 678.209 1101.71 680 1099.5 680H116.846C114.637 680 112.846 678.209 112.846 676V657Z"
             fill="url(#paint8_linear_601_140)"
           />
-
           {isVideoLoading && (
             <foreignObject x="596" y="325.5" width="24" height="24">
-              <LoadingSpinner className="!static w-full h-full text-neutral-800 dark:text-neutral-200" />
+              <LoadingSpinner className="!static w-full h-full !stroke-white text-white opacity-100 filter-none" />
             </foreignObject>
           )}
 
