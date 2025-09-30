@@ -33,7 +33,9 @@ function Mac() {
     return (
       <div className="w-full max-w-lg mx-auto px-4 my-8">
         <div className="relative rounded-lg shadow-lg">
-          {isVideoLoading && <LoadingSpinner />}
+          {isVideoLoading && (
+            <LoadingSpinner className="text-neutral-800 dark:text-neutral-200" />
+          )}
           <video
             key={resolvedTheme}
             src={
@@ -172,7 +174,7 @@ function Mac() {
 
           {isVideoLoading && (
             <foreignObject x="596" y="325.5" width="24" height="24">
-              <LoadingSpinner className="!static w-full h-full" />
+              <LoadingSpinner className="!static w-full h-full text-neutral-800 dark:text-neutral-200" />
             </foreignObject>
           )}
 
